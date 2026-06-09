@@ -3,6 +3,10 @@ import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { members } from '@/data/platform'
 import { cn } from '@/lib/cn'
+import { NAV } from './nav'
+
+// Settings nav lives in this menu (flagged inUserMenu) rather than the top bar.
+const settingsItems = NAV.filter((g) => g.inUserMenu).flatMap((g) => g.items)
 
 // Signed-in user (mock — first member of the org).
 const user = members[0]
@@ -85,8 +89,14 @@ export function UserMenu() {
             <div className="mt-1 text-xs text-fg-subtle">{user.role}</div>
           </div>
           <div className="py-1">
-            <MenuItem onClick={() => go('/settings/members')}>Members &amp; roles</MenuItem>
-            <MenuItem onClick={() => go('/settings/organization')}>Organization</MenuItem>
+            <div className="px-3 py-1 text-[11px] uppercase tracking-wider text-fg-subtle">
+              Settings
+            </div>
+            {settingsItems.map((item) => (
+              <MenuItem key={item.to} onClick={() => go(item.to)}>
+                {item.label}
+              </MenuItem>
+            ))}
           </div>
           <div className="border-t py-1">
             <MenuItem danger onClick={() => go('/login')}>

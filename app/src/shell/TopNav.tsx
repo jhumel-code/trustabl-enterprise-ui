@@ -11,7 +11,7 @@ import { NavGroupMenu } from './NavGroupMenu'
 export function TopNav() {
   return (
     <nav className="hidden shrink-0 items-center gap-1 lg:flex">
-      {NAV.map((group, gi) =>
+      {NAV.filter((g) => !g.inUserMenu).map((group, gi) =>
         group.heading ? (
           <NavGroupMenu key={gi} group={group} />
         ) : (

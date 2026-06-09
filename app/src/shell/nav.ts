@@ -5,6 +5,8 @@ export interface NavItem {
 export interface NavGroup {
   heading?: string
   items: NavItem[]
+  /** Render this group in the user/profile menu instead of the primary nav. */
+  inUserMenu?: boolean
 }
 
 // Sidebar groups — from ../../information-architecture.md.
@@ -27,6 +29,7 @@ export const NAV: NavGroup[] = [
   },
   {
     heading: 'Settings',
+    inUserMenu: true,
     items: [
       { label: 'Integrations', to: '/settings/integrations' },
       { label: 'Rule packs', to: '/settings/rules' },

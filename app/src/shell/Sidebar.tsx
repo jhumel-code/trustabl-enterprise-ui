@@ -6,7 +6,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   return (
     <nav className="h-full overflow-auto border-r bg-surface px-2 py-3">
       <ul className="text-sm">
-        {NAV.map((group, gi) => (
+        {NAV.filter((g) => !g.inUserMenu).map((group, gi) => (
           <li key={gi}>
             {group.heading && (
               <div className="mt-4 px-2.5 py-1 text-[11px] uppercase tracking-wider text-fg-subtle">
