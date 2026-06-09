@@ -1,6 +1,6 @@
 {
   "scan_id": "scan_fdcdb91c24525c04",
-  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/email-agent",
+  "repo": "testdata/corpus/email-agent",
   "languages": [
     "typescript",
     "javascript"
@@ -10,7 +10,7 @@
   ],
   "has_shell_invocations": false,
   "manifest": {
-    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/email-agent",
+    "repo_root": "testdata/corpus/email-agent",
     "is_remote": false,
     "python_files": [],
     "typescript_files": [
