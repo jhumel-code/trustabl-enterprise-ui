@@ -40,7 +40,7 @@ export const auditEvents = [
   { id: 'ev_1042', at: '2026-06-09 09:14', actor: 's.chen', action: 'waiver.approve', target: 'CSDK-012 · email-agent' },
   { id: 'ev_1041', at: '2026-06-09 08:55', actor: 'system', action: 'scan.complete', target: 'email-agent · scan_fdcdb91c' },
   { id: 'ev_1039', at: '2026-06-08 17:30', actor: 'j.lee', action: 'policy.update', target: 'severity threshold → medium' },
-  { id: 'ev_1037', at: '2026-06-08 16:02', actor: 'a.rivera', action: 'integration.connect', target: 'Jira' },
+  { id: 'ev_1037', at: '2026-06-08 16:02', actor: 'i.bautista', action: 'integration.connect', target: 'Jira' },
   { id: 'ev_1031', at: '2026-06-07 11:20', actor: 'system', action: 'rules.update', target: 'd77749c5' },
 ]
 
@@ -62,7 +62,7 @@ export const notifications: AppNotification[] = [
 ]
 
 export const members = [
-  { id: 'u1', name: 'Alex Rivera', email: 'a.rivera@example.com', role: 'Admin', sso: true },
+  { id: 'u1', name: 'Ian Jhumel Bautista', email: 'i.bautista@example.com', role: 'Admin', sso: true },
   { id: 'u2', name: 'Sam Chen', email: 's.chen@example.com', role: 'Security lead', sso: true },
   { id: 'u3', name: 'Jordan Lee', email: 'j.lee@example.com', role: 'Compliance', sso: true },
   { id: 'u4', name: 'CI Bot', email: 'ci@example.com', role: 'Developer', sso: false },
