@@ -1,5 +1,6 @@
 import { ThemeToggle } from './ThemeToggle'
 import { ConnectivityBadge } from './ConnectivityBadge'
+import { UserMenu } from './UserMenu'
 
 export function Topbar() {
   return (
@@ -18,9 +19,7 @@ export function Topbar() {
       />
       <ConnectivityBadge />
       <ThemeToggle />
-      <span className="grid h-7 w-7 place-items-center rounded-full border border-strong text-xs text-fg-muted">
-        IB
-      </span>
+      <UserMenu />
     </header>
   )
 }
