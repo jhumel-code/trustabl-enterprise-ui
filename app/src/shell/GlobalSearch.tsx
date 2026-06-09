@@ -116,7 +116,7 @@ export function GlobalSearch() {
   const showDropdown = open && query.trim().length > 0
 
   return (
-    <div ref={rootRef} className="relative hidden max-w-[520px] flex-1 sm:block">
+    <div ref={rootRef} className="relative hidden w-60 sm:block lg:w-72">
       <input
         value={query}
         onChange={(e) => {
@@ -135,7 +135,7 @@ export function GlobalSearch() {
         <div
           id="global-search-results"
           role="listbox"
-          className="absolute left-0 right-0 top-full z-[100] mt-1 max-h-80 overflow-auto rounded-md border border-strong bg-surface-raised py-1 shadow-lg"
+          className="absolute right-0 top-full z-[100] mt-1 max-h-80 w-[380px] max-w-[calc(100vw-2rem)] overflow-auto rounded-md border border-strong bg-surface-raised py-1 shadow-lg"
         >
           {results.length === 0 ? (
             <div className="px-3 py-3 text-sm text-fg-muted">No matches for “{query.trim()}”</div>

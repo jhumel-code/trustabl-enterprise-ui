@@ -33,10 +33,11 @@ export function Topbar({ onMenu }: { onMenu?: () => void } = {}) {
       <span className="flex items-center gap-2 whitespace-nowrap font-bold tracking-tight">
         <img src={`${import.meta.env.BASE_URL}brand/logo-mark.png`} alt="" className="block h-6 w-6" /> Trustabl
       </span>
-      <GlobalSearch />
-      <div className="flex-1 sm:hidden" />
-      <ThemeToggle />
-      <UserMenu />
+      <div className="ml-auto flex items-center gap-3">
+        <GlobalSearch />
+        <ThemeToggle />
+        <UserMenu />
+      </div>
     </header>
   )
 }
