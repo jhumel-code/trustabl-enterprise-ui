@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { X } from 'lucide-react'
+import { CircleCheck, CircleX, Info, TriangleAlert, X, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
 export type ToastTone = 'success' | 'error' | 'warning' | 'info'
@@ -34,11 +34,16 @@ export function useToast() {
   return ctx
 }
 
-const TONE_DOT: Record<ToastTone, string> = {
-  success: 'bg-status-success',
-  error: 'bg-status-danger',
-  warning: 'bg-status-warning',
-  info: 'bg-status-info',
+const TONE_ICON: Record<ToastTone, { Icon: LucideIcon; className: string }> = {
+  success: { Icon: CircleCheck, className: 'text-status-success' },
+  error: { Icon: CircleX, className: 'text-status-danger' },
+  warning: { Icon: TriangleAlert, className: 'text-status-warning' },
+  info: { Icon: Info, className: 'text-status-info' },
+}
+
+function ToneIcon({ tone }: { tone: ToastTone }) {
+  const { Icon, className } = TONE_ICON[tone]
+  return <Icon size={16} className={cn('mt-0.5 shrink-0', className)} />
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -89,7 +94,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             role="status"
             className="pointer-events-auto flex items-start gap-3 rounded-lg border border-strong bg-surface-raised p-3 shadow-lg"
           >
-            <span className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', TONE_DOT[t.tone])} />
+            <ToneIcon tone={t.tone} />
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium text-fg">{t.title}</div>
               {t.description && <div className="mt-0.5 text-xs text-fg-muted">{t.description}</div>}

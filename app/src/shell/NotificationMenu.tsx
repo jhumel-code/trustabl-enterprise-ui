@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
-import { Bell, X } from 'lucide-react'
+import { Bell, CircleCheck, CircleX, Info, TriangleAlert, X, type LucideIcon } from 'lucide-react'
 import { notifications as seed, type AppNotification } from '@/data/platform'
 import { cn } from '@/lib/cn'
 
-const TONE_DOT: Record<AppNotification['tone'], string> = {
-  success: 'bg-status-success',
-  danger: 'bg-status-danger',
-  warning: 'bg-status-warning',
-  info: 'bg-status-info',
+const TONE_ICON: Record<AppNotification['tone'], { Icon: LucideIcon; className: string }> = {
+  success: { Icon: CircleCheck, className: 'text-status-success' },
+  danger: { Icon: CircleX, className: 'text-status-danger' },
+  warning: { Icon: TriangleAlert, className: 'text-status-warning' },
+  info: { Icon: Info, className: 'text-status-info' },
+}
+
+function NotifIcon({ tone }: { tone: AppNotification['tone'] }) {
+  const { Icon, className } = TONE_ICON[tone]
+  return <Icon size={16} className={cn('mt-0.5 shrink-0', className)} />
 }
 
 /** Header notification center: a bell with an unread badge that opens a feed.
@@ -79,7 +84,7 @@ export function NotificationMenu() {
                   <div
                     className={cn('flex items-start gap-2.5 px-3 py-2.5', !n.read && 'bg-inset')}
                   >
-                    <span className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', TONE_DOT[n.tone])} />
+                    <NotifIcon tone={n.tone} />
                     <button
                       type="button"
                       onClick={() => markRead(n.id)}
