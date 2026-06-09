@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { FolderGit2, ShieldCheck, ShieldX, TriangleAlert } from 'lucide-react'
 import type { RepoSummary } from '@/types'
 import { findings } from '@/data/loadScan'
 import { org, repos } from '@/data/platform'
@@ -111,19 +112,25 @@ export function OverviewPage() {
           label="Repositories"
           value={repos.length}
           sub={`${liveCount} live · ${demoCount} demo`}
-          dotClass="bg-brand"
+          icon={<FolderGit2 size={14} className="text-fg-muted" />}
         />
         <Stat
           label="Total findings"
           value={totalFindings}
           sub={`${liveFindings} live · ${demoFindings} demo`}
-          dotClass="bg-severity-medium"
+          icon={<TriangleAlert size={14} className="text-status-warning" />}
         />
         <Stat
           label="Gates failing"
           value={gatesFailing}
           sub={`of ${repos.length} ${repos.length === 1 ? 'repository' : 'repositories'}`}
-          dotClass={gatesFailing > 0 ? 'bg-severity-critical' : 'bg-status-success'}
+          icon={
+            gatesFailing > 0 ? (
+              <ShieldX size={14} className="text-status-danger" />
+            ) : (
+              <ShieldCheck size={14} className="text-status-success" />
+            )
+          }
         />
       </div>
 
