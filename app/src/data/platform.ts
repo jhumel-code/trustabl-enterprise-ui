@@ -78,15 +78,33 @@ export const policy = {
 
 export const license = {
   tier: 'Enterprise',
+  status: 'active',
+  licenseId: 'TRB-ENT-2026-7F3A-9C21',
+  issuedTo: 'Trustabl Inc.',
+  deployment: 'Self-hosted · single-tenant',
+  issuedAt: '2026-02-01',
+  expiresAt: '2027-01-31',
+  support: '24×7 · 4-hour SLA',
   seats: 25,
   seatsUsed: 4,
   reposCap: 50,
   reposUsed: 4,
   agentsCap: 200,
   agentsUsed: 11,
-  expiresAt: '2027-01-31',
   offlineKey: true,
-  entitlements: ['Unlimited scans', 'Air-gap updates', 'SSO/SCIM', 'Signed rule channels', 'SARIF + SIEM export'],
+  offlineKeyFingerprint: 'SHA256:9f86d081…b0f00a08',
+  activatedAt: '2026-02-03',
+  entitlements: [
+    { name: 'Unlimited scans', enabled: true },
+    { name: 'Air-gap / offline updates', enabled: true },
+    { name: 'SSO / SCIM provisioning', enabled: true },
+    { name: 'Signed rule channels', enabled: true },
+    { name: 'SARIF + SIEM export', enabled: true },
+    { name: 'Custom rule packs', enabled: true },
+    { name: 'Audit log retention (365 days)', enabled: true },
+    { name: 'Priority support', enabled: true },
+    { name: 'Multi-tenant orgs', enabled: false },
+  ],
 }
 
 export const org = {
