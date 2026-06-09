@@ -51,7 +51,7 @@ export function LoginPage() {
         </form>
 
         <p className="mt-5 text-center text-xs text-fg-subtle">
-          air-gapped · SSO via internal IdP
+          no telemetry · SSO via internal IdP
         </p>
       </Card>
     </div>

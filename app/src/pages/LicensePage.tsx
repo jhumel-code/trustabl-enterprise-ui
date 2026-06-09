@@ -125,7 +125,7 @@ export function LicensePage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-sm">
                 <StatusDot tone="success" />
-                <span className="text-fg-muted">Air-gap key</span>
+                <span className="text-fg-muted">Offline key</span>
                 <span className="font-mono text-status-success">{keyName ?? 'active'}</span>
               </div>
               <div className="mt-1 font-mono text-xs text-fg-subtle">
@@ -139,7 +139,7 @@ export function LicensePage() {
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span className="text-sm text-fg-subtle">
-              No offline key on file — required for air-gapped updates.
+              No offline key on file — required for offline updates.
             </span>
             <Button variant="secondary" onClick={() => fileRef.current?.click()}>
               Upload key

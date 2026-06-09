@@ -31,7 +31,7 @@ export function IntegrationsPage() {
       </div>
 
       <p className="text-xs text-fg-subtle">
-        Air-gap ready: every integration must degrade to on-prem / offline endpoints — no
+        Runs in your network: every integration can point at on-prem / internal endpoints — no
         outbound calls to a vendor cloud. Configure self-hosted SCM, IdP, and webhook targets
         so scans, gate checks, and exports keep working with no internet egress.
       </p>

@@ -61,7 +61,7 @@ export function IntegrationCard({ integration }: { integration: Integration }) {
             <Input type="password" placeholder="••••••••" />
           </div>
           <p className="text-xs text-fg-subtle">
-            Air-gap: point at an on-prem / internal endpoint — no public SaaS required.
+            Point at an on-prem / internal endpoint — no public SaaS required.
           </p>
         </div>
       </Modal>

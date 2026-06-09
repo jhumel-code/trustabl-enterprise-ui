@@ -2,16 +2,16 @@ import { deployment } from '@/config'
 import { useOnlineStatus } from '@/lib/useOnlineStatus'
 import { Badge } from '@/components/ui/Badge'
 
-/** Top-bar status badge. An air-gapped deployment shows the posture; otherwise it
- *  reflects live browser connectivity. */
+/** Top-bar status badge. A local-only deployment shows the privacy posture;
+ *  otherwise it reflects live browser connectivity. */
 export function ConnectivityBadge() {
   const online = useOnlineStatus()
 
-  if (deployment.airGapped) {
+  if (deployment.localOnly) {
     return (
       <Badge tone="brand" className="ml-auto">
-        <span title="Self-hosted, air-gapped deployment — no external calls; scans run from the local rules cache.">
-          ⛓ air-gapped
+        <span title="Runs entirely in your environment — no telemetry or external calls; your code never leaves your infrastructure.">
+          🔒 local · no telemetry
         </span>
       </Badge>
     )

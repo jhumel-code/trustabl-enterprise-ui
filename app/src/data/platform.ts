@@ -96,7 +96,7 @@ export const license = {
   activatedAt: '2026-02-03',
   entitlements: [
     { name: 'Unlimited scans', enabled: true },
-    { name: 'Air-gap / offline updates', enabled: true },
+    { name: 'Offline / local updates', enabled: true },
     { name: 'SSO / SCIM provisioning', enabled: true },
     { name: 'Signed rule channels', enabled: true },
     { name: 'SARIF + SIEM export', enabled: true },
