@@ -65,7 +65,7 @@ export function RepositoriesPage() {
       cell: (r: RepoSummary) => <span className="text-fg-muted">{r.lastScan}</span>,
     },
     {
-      header: '',
+      header: 'Actions',
       className: 'w-[1%] whitespace-nowrap text-right',
       cell: (r: RepoSummary) => (
         <Button
