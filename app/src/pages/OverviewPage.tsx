@@ -1,14 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import type { RepoSummary } from '@/types'
 import { findings } from '@/data/loadScan'
-import { integrations, org, repos } from '@/data/platform'
+import { org, repos } from '@/data/platform'
 import { pct } from '@/lib/format'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Stat } from '@/components/ui/Stat'
-import { StatusDot } from '@/components/ui/StatusDot'
 import { DataTable } from '@/components/ui/DataTable'
 import { ScoreGauge } from '@/components/domain/ScoreGauge'
 import { FindingTable } from '@/components/domain/FindingTable'
@@ -20,12 +19,6 @@ import { downloadFile } from '@/lib/download'
 const TOP_REPOS = 8
 const byRisk = (a: RepoSummary, b: RepoSummary) =>
   (a.gate === 'fail' ? 0 : 1) - (b.gate === 'fail' ? 0 : 1) || a.score - b.score
-
-const STATUS_TONE = {
-  connected: 'success',
-  disconnected: 'subtle',
-  error: 'danger',
-} as const
 
 export function OverviewPage() {
   const avgScore = repos.reduce((sum, r) => sum + r.score, 0) / Math.max(repos.length, 1)
@@ -155,41 +148,16 @@ export function OverviewPage() {
         </div>
       </Card>
 
-      {/* findings + integrations */}
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
-        <Card className="min-w-0 p-0">
-          <div className="flex items-center justify-between border-b px-4 py-3">
-            <h2 className="text-sm font-semibold">Top findings</h2>
-            <span className="text-xs text-fg-muted">{findings.length} open</span>
-          </div>
-          <div className="overflow-auto p-2">
-            <FindingTable findings={findings} />
-          </div>
-        </Card>
-
-        <Card className="p-0">
-          <div className="flex items-center justify-between border-b px-4 py-3">
-            <h2 className="text-sm font-semibold">Integrations</h2>
-            <span className="text-xs text-fg-muted">
-              {integrations.filter((i) => i.status === 'connected').length}/{integrations.length} connected
-            </span>
-          </div>
-          <ul className="divide-y">
-            {integrations.map((i) => (
-              <li key={i.id} className="flex items-center justify-between px-4 py-3">
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-medium">{i.name}</div>
-                  <div className="truncate text-xs text-fg-subtle">{i.kind}</div>
-                </div>
-                <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-fg-muted">
-                  <StatusDot tone={STATUS_TONE[i.status]} />
-                  {i.status}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
+      {/* top findings */}
+      <Card className="min-w-0 p-0">
+        <div className="flex items-center justify-between border-b px-4 py-3">
+          <h2 className="text-sm font-semibold">Top findings</h2>
+          <span className="text-xs text-fg-muted">{findings.length} open</span>
+        </div>
+        <div className="overflow-auto p-2">
+          <FindingTable findings={findings} />
+        </div>
+      </Card>
     </div>
   )
 }
