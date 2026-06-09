@@ -39,26 +39,6 @@ export function originIsWarning(o: RulesOrigin): boolean {
 
 export const SEVERITY_ORDER: Severity[] = ['critical', 'high', 'medium', 'low', 'info']
 
-/** A distinct dot/background color per discovered entity kind / finding scope. */
-export function kindDot(kind: string): string {
-  switch (kind) {
-    case 'tool':
-      return 'bg-status-info'
-    case 'agent':
-      return 'bg-brand'
-    case 'subagent':
-      return 'bg-status-danger'
-    case 'skill':
-      return 'bg-status-warning'
-    case 'mcp':
-      return 'bg-status-success'
-    case 'repo':
-      return 'bg-status-neutral'
-    default:
-      return 'bg-fg-subtle'
-  }
-}
-
 /** Short display of a commit SHA / long ref; leaves human refs untouched. */
 export const shortRef = (s: string): string => (/^[0-9a-f]{12,}$/i.test(s) ? s.slice(0, 7) : s)
 

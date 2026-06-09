@@ -1,10 +1,6 @@
 import type { Surface } from '@/types'
 import { pct } from '@/lib/format'
-import { cn } from '@/lib/cn'
 import { ScopeBadge } from './ScopeBadge'
-
-const scoreTone = (score: number) =>
-  score < 0.4 ? 'text-status-danger' : score < 0.7 ? 'text-status-warning' : 'text-status-success'
 
 /** Per-surface readiness, worst first. */
 export function SurfaceList({ surfaces }: { surfaces: Surface[] }) {
@@ -20,9 +16,7 @@ export function SurfaceList({ surfaces }: { surfaces: Surface[] }) {
           <div className="flex shrink-0 items-center gap-4">
             <ScopeBadge scope={s.kind} />
             <span className="text-xs text-fg-muted">{s.findingCount} findings</span>
-            <span className={cn('w-10 text-right text-sm font-semibold tabular-nums', scoreTone(s.score))}>
-              {pct(s.score)}
-            </span>
+            <span className="w-10 text-right text-sm font-semibold tabular-nums">{pct(s.score)}</span>
           </div>
         </div>
       ))}

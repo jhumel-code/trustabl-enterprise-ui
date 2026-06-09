@@ -1,91 +1,120 @@
-import type { InventoryEntity } from '@/types'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { inventory, inventoryEntities, surfaces } from '@/data/loadScan'
-import { kindDot } from '@/lib/format'
-import { cn } from '@/lib/cn'
+import type { InventoryEntity } from '@/types'
+import { inventoryEntities, surfaces } from '@/data/loadScan'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { TableCard } from '@/components/ui/TableCard'
-import { Stat } from '@/components/ui/Stat'
 import { Tabs } from '@/components/ui/Tabs'
-import { DataTable } from '@/components/ui/DataTable'
-import type { Column } from '@/components/ui/DataTable'
 import { SurfaceList } from '@/components/domain/SurfaceList'
 
-// Map each summary tile to its entity kind for color-coding.
-const LABEL_KIND: Record<string, string> = {
-  Tools: 'tool',
-  Agents: 'agent',
-  Subagents: 'subagent',
-  Skills: 'skill',
-  'MCP servers': 'mcp',
-  'Slash commands': '',
+type SortCol = 'kind' | 'name' | 'location'
+
+const location = (e: InventoryEntity): string =>
+  e.filePath ? `${e.filePath}${e.startLine ? `:${e.startLine}` : ''}` : ''
+
+const sortKey = (e: InventoryEntity, col: SortCol): string =>
+  col === 'location' ? location(e) : col === 'name' ? e.name : e.kind
+
+const HEADERS: { id: SortCol | 'detail'; label: string; sortable: boolean; className?: string }[] = [
+  { id: 'kind', label: 'Kind', sortable: true, className: 'w-24' },
+  { id: 'name', label: 'Name', sortable: true },
+  { id: 'location', label: 'Location', sortable: true },
+  { id: 'detail', label: 'Detail', sortable: false, className: 'w-full' },
+]
+
+function InventoryTable() {
+  const navigate = useNavigate()
+  const [col, setCol] = useState<SortCol>('kind')
+  const [dir, setDir] = useState<'asc' | 'desc'>('asc')
+
+  function sortBy(c: SortCol) {
+    if (c === col) setDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    else {
+      setCol(c)
+      setDir('asc')
+    }
+  }
+
+  const rows = [...inventoryEntities].sort((a, b) => {
+    const cmp = sortKey(a, col).localeCompare(sortKey(b, col))
+    return dir === 'asc' ? cmp : -cmp
+  })
+
+  return (
+    <TableCard title="Inventory" count={inventoryEntities.length}>
+      <table className="w-full border-collapse text-sm">
+        <thead>
+          <tr>
+            {HEADERS.map((h) => (
+              <th
+                key={h.id}
+                className={
+                  'border-b px-2.5 py-2 text-left align-bottom text-[11px] font-medium uppercase tracking-wide text-fg-subtle ' +
+                  (h.className ?? '')
+                }
+              >
+                {h.sortable ? (
+                  <button
+                    type="button"
+                    onClick={() => sortBy(h.id as SortCol)}
+                    className="inline-flex items-center gap-1 uppercase tracking-wide hover:text-fg"
+                  >
+                    {h.label}
+                    <span className="text-fg-muted">{col === h.id ? (dir === 'asc' ? '↑' : '↓') : ''}</span>
+                  </button>
+                ) : (
+                  h.label
+                )}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.length === 0 ? (
+            <tr>
+              <td colSpan={HEADERS.length} className="px-2.5 py-6 text-center text-fg-muted">
+                Nothing discovered in this repo.
+              </td>
+            </tr>
+          ) : (
+            rows.map((e, i) => (
+              <tr
+                key={i}
+                onClick={() => navigate(e.kind === 'skill' ? `/skills/${e.name}` : `/surfaces/${e.name}`)}
+                className="cursor-pointer border-b last:border-0 hover:bg-inset"
+              >
+                <td className="whitespace-nowrap px-2.5 py-2.5 align-top text-xs font-medium uppercase tracking-wide text-fg-muted">
+                  {e.kind}
+                </td>
+                <td className="px-2.5 py-2.5 align-top font-medium text-fg">{e.name}</td>
+                <td className="whitespace-nowrap px-2.5 py-2.5 align-top font-mono text-xs text-fg-subtle">
+                  {location(e) || '—'}
+                </td>
+                <td className="px-2.5 py-2.5 align-top text-fg-muted">
+                  <div className="line-clamp-2">{e.detail ?? '—'}</div>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </TableCard>
+  )
 }
 
-/** Surfaces & Inventory — everything the scanner discovered, in one place. */
+/** Surfaces & Inventory — a clean, sortable inventory of everything discovered. */
 export function InventoryPage() {
-  const navigate = useNavigate()
-
-  const columns: Column<InventoryEntity>[] = [
-    {
-      header: 'Kind',
-      cell: (e) => (
-        <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-fg-muted">
-          <span className={cn('h-2 w-2 rounded-full', kindDot(e.kind))} />
-          {e.kind}
-        </span>
-      ),
-    },
-    { header: 'Name', cell: (e) => <span className="font-medium text-fg">{e.name}</span> },
-    {
-      header: 'Location',
-      className: 'font-mono text-xs text-fg-subtle',
-      cell: (e) => (
-        <span>
-          {e.filePath || '—'}
-          {e.startLine ? `:${e.startLine}` : ''}
-        </span>
-      ),
-    },
-    {
-      header: 'Detail',
-      className: 'text-fg-muted',
-      cell: (e) => <span className="text-fg-muted">{e.detail ?? '—'}</span>,
-    },
-  ]
-
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Surfaces & Inventory"
-        subtitle="Everything the scanner discovered"
+        subtitle={`${inventoryEntities.length} components · ${surfaces.length} analyzed surfaces`}
       />
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {inventory.map((i) => (
-          <Stat key={i.label} label={i.label} value={i.n} dotClass={kindDot(LABEL_KIND[i.label] ?? '')} />
-        ))}
-      </div>
 
       <Tabs
         items={[
-          {
-            id: 'inventory',
-            label: 'Inventory',
-            count: inventoryEntities.length,
-            content: (
-              <TableCard title="Inventory" count={inventoryEntities.length}>
-                <DataTable
-                  columns={columns}
-                  rows={inventoryEntities}
-                  onRowClick={(e) =>
-                    navigate(e.kind === 'skill' ? `/skills/${e.name}` : `/surfaces/${e.name}`)
-                  }
-                  empty="No tools, agents, or skills were discovered in this repo."
-                />
-              </TableCard>
-            ),
-          },
+          { id: 'inventory', label: 'Inventory', count: inventoryEntities.length, content: <InventoryTable /> },
           {
             id: 'surfaces',
             label: 'Surfaces',
