@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-type Theme = 'dark' | 'light'
+export type Theme = 'dark' | 'light'
 
 function initialTheme(): Theme {
   try {
@@ -12,7 +12,10 @@ function initialTheme(): Theme {
   return 'dark'
 }
 
-export function ThemeToggle() {
+/** Theme state bound to the document `data-theme` attribute and localStorage.
+ *  Returns the current theme and a setter; mount it once in an always-present
+ *  component (the user menu lives in the header on every app page). */
+export function useTheme() {
   const [theme, setTheme] = useState<Theme>(initialTheme)
 
   useEffect(() => {
@@ -24,14 +27,5 @@ export function ThemeToggle() {
     }
   }, [theme])
 
-  return (
-    <button
-      type="button"
-      onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-      className="rounded-full border border-strong px-2 py-[3px] text-xs text-fg-muted hover:text-fg"
-      aria-label="Toggle theme"
-    >
-      {theme === 'dark' ? '◐ dark' : '◑ light'}
-    </button>
-  )
+  return [theme, setTheme] as const
 }

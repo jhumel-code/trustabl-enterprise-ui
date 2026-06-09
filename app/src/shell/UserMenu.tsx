@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { members } from '@/data/platform'
 import { cn } from '@/lib/cn'
+import { useTheme, type Theme } from '@/lib/useTheme'
 import { NAV } from './nav'
 
 // Settings nav lives in this menu (flagged inUserMenu) rather than the top bar.
@@ -41,10 +42,25 @@ function MenuItem({
   )
 }
 
+const THEME_ICON: Record<Theme, ReactNode> = {
+  light: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </svg>
+  ),
+  dark: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+    </svg>
+  ),
+}
+
 export function UserMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const [theme, setTheme] = useTheme()
 
   useEffect(() => {
     if (!open) return
@@ -97,6 +113,28 @@ export function UserMenu() {
                 {item.label}
               </MenuItem>
             ))}
+          </div>
+          <div className="border-t px-3 py-2.5">
+            <div className="mb-1.5 text-[11px] uppercase tracking-wider text-fg-subtle">
+              Appearance
+            </div>
+            <div className="flex gap-1 rounded-md border border-strong p-0.5">
+              {(['light', 'dark'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTheme(t)}
+                  aria-pressed={theme === t}
+                  className={cn(
+                    'flex flex-1 items-center justify-center gap-1.5 rounded px-2 py-1 text-xs capitalize',
+                    theme === t ? 'bg-inset font-medium text-fg' : 'text-fg-muted hover:text-fg',
+                  )}
+                >
+                  {THEME_ICON[t]}
+                  {t}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="border-t py-1">
             <MenuItem danger onClick={() => go('/login')}>

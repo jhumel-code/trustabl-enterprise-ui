@@ -1,4 +1,3 @@
-import { ThemeToggle } from './ThemeToggle'
 import { UserMenu } from './UserMenu'
 import { GlobalSearch } from './GlobalSearch'
 import { NotificationMenu } from './NotificationMenu'
@@ -39,7 +38,6 @@ export function Topbar({ onMenu }: { onMenu?: () => void } = {}) {
       <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-3">
         <GlobalSearch />
         <NotificationMenu />
-        <ThemeToggle />
         <UserMenu />
       </div>
     </header>
