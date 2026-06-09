@@ -10,12 +10,14 @@ import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
 import { DataTable } from '@/components/ui/DataTable'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { useToast } from '@/components/ui/Toast'
 
 /** All repositories — the full control-plane fleet list. Searchable by name and
  *  sortable on every column so it stays usable as the fleet grows; defaults to
  *  lowest-readiness first. The email-agent row links into the one real scan. */
 export function RepositoriesPage() {
   const navigate = useNavigate()
+  const toast = useToast()
   const [query, setQuery] = useState('')
   const [scanTarget, setScanTarget] = useState<RepoSummary | null>(null)
 
@@ -122,7 +124,15 @@ export function RepositoriesPage() {
       <ConfirmDialog
         open={!!scanTarget}
         onClose={() => setScanTarget(null)}
-        onConfirm={() => setScanTarget(null)}
+        onConfirm={() => {
+          if (scanTarget)
+            toast({
+              title: 'Scan queued',
+              description: `${scanTarget.name} will be scanned shortly.`,
+              tone: 'success',
+            })
+          setScanTarget(null)
+        }}
         title={scanTarget ? `Scan ${scanTarget.name}?` : 'Scan repository'}
         message="This will queue a fresh scan of the repository."
         confirmLabel="Scan"

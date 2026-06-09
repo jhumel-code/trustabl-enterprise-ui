@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { useToast } from '@/components/ui/Toast'
 import { ScoreGauge } from '@/components/domain/ScoreGauge'
 import { ProjectedScoreLadder } from '@/components/domain/ProjectedScoreLadder'
 import { GateStatus } from '@/components/domain/GateStatus'
@@ -20,6 +21,7 @@ import { FindingTable } from '@/components/domain/FindingTable'
 export function RepoOverviewPage() {
   const { repoId } = useParams()
   const navigate = useNavigate()
+  const toast = useToast()
   const r = repos.find((x) => x.id === repoId)
   const name = r?.name ?? repoId ?? 'Repository'
   const scanned = Boolean(r && !r.demo)
@@ -87,7 +89,10 @@ export function RepoOverviewPage() {
           <ConfirmDialog
             open={rescanOpen}
             onClose={() => setRescanOpen(false)}
-            onConfirm={() => setRescanOpen(false)}
+            onConfirm={() => {
+              toast({ title: 'Scan queued', description: `${name} will be re-scanned shortly.`, tone: 'success' })
+              setRescanOpen(false)
+            }}
             title={`Re-scan ${name}?`}
             message="This will queue a fresh scan of the repository."
             confirmLabel="Re-scan"

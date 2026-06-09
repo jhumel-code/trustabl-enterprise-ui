@@ -1,4 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { ToastProvider } from '@/components/ui/Toast'
 import { AppShell } from '@/shell/AppShell'
 import { OverviewPage } from '@/pages/OverviewPage'
 import { RepositoriesPage } from '@/pages/RepositoriesPage'
@@ -22,8 +23,9 @@ import { StubPage } from '@/pages/StubPage'
 
 export default function App() {
   return (
-    <HashRouter>
-      <Routes>
+    <ToastProvider>
+      <HashRouter>
+        <Routes>
         <Route element={<AppShell />}>
           <Route path="/" element={<OverviewPage />} />
           <Route path="/repos" element={<RepositoriesPage />} />
@@ -51,7 +53,8 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
-      </Routes>
-    </HashRouter>
+        </Routes>
+      </HashRouter>
+    </ToastProvider>
   )
 }

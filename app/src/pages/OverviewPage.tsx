@@ -11,6 +11,7 @@ import { Stat } from '@/components/ui/Stat'
 import { DataTable } from '@/components/ui/DataTable'
 import { ScoreGauge } from '@/components/domain/ScoreGauge'
 import { FindingTable } from '@/components/domain/FindingTable'
+import { useToast } from '@/components/ui/Toast'
 import { downloadFile } from '@/lib/download'
 
 // On a dashboard the repo section is a prioritized summary, not the full list:
@@ -30,6 +31,7 @@ export function OverviewPage() {
   const demoFindings = totalFindings - liveFindings
 
   const navigate = useNavigate()
+  const toast = useToast()
   const topRepos = [...repos].sort(byRisk).slice(0, TOP_REPOS)
 
   const repoColumns = [
@@ -74,6 +76,7 @@ export function OverviewPage() {
 
   function handleExport() {
     downloadFile('overview.json', JSON.stringify({ repos, findings: findings.length }, null, 2))
+    toast({ title: 'Report exported', description: 'overview.json downloaded.', tone: 'success' })
   }
 
   return (
