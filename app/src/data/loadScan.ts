@@ -5,6 +5,7 @@ import type {
   Gate,
   InventoryEntity,
   InventoryKind,
+  InventoryTag,
   Repo,
   Scan,
   Scope,
@@ -78,6 +79,12 @@ interface RawEntity {
   description?: string
   sdk?: string
   kind?: string
+  language?: string
+  has_typed_params?: boolean
+  facts?: Record<string, unknown>
+  tool_refs?: { name: string; external?: boolean }[]
+  tools?: string[]
+  transport?: string
 }
 interface RawBundled {
   path: string
@@ -206,23 +213,73 @@ export const dependencies: Dependency[] = (data.dependencies ?? []).map((dp) => 
   endLine: dp.end_line,
 }))
 
-function ent(kind: InventoryKind, e: RawEntity, detail?: string): InventoryEntity {
+// Built-in tools that meaningfully widen an agent/subagent's blast radius.
+const RISKY_TOOLS = new Set(['Bash', 'Write', 'Edit', 'WebFetch'])
+const truthy = (v: unknown) => v === true || v === 'true'
+
+/** Tool/agent grant chips: a count plus a risk chip per dangerous built-in. */
+function grantTags(toolNames: string[]): InventoryTag[] {
+  const tags: InventoryTag[] = [{ label: `${toolNames.length} tool${toolNames.length === 1 ? '' : 's'}` }]
+  for (const n of toolNames) if (RISKY_TOOLS.has(n)) tags.push({ label: n, risk: true })
+  return tags
+}
+
+function toolTags(e: RawEntity): InventoryTag[] {
+  const tags: InventoryTag[] = []
+  const f = e.facts ?? {}
+  if (truthy(f.writes_fs)) tags.push({ label: 'writes FS', risk: true })
+  if (truthy(f.shells_out)) tags.push({ label: 'shells out', risk: true })
+  if (truthy(f.makes_network) || truthy(f.makes_http)) tags.push({ label: 'network', risk: true })
+  tags.push(e.has_typed_params ? { label: 'typed params' } : { label: 'untyped params', risk: true })
+  return tags
+}
+
+function skillTags(s: RawSkill): InventoryTag[] {
+  const tags: InventoryTag[] = []
+  if (s.allowed_tools?.length) tags.push({ label: `${s.allowed_tools.length} tools` })
+  if (s.bundled_files?.length) tags.push({ label: `${s.bundled_files.length} bundled` })
+  if (s.external_urls?.length)
+    tags.push({ label: `${s.external_urls.length} external URL${s.external_urls.length === 1 ? '' : 's'}`, risk: true })
+  return tags
+}
+
+interface NamedEntity {
+  name?: string
+  class?: string
+  file_path?: string
+  start_line?: number
+  end_line?: number
+}
+
+function ent(
+  kind: InventoryKind,
+  e: NamedEntity,
+  opts: { meta?: string; tags?: InventoryTag[]; detail?: string } = {},
+): InventoryEntity {
   return {
     kind,
     name: e.name ?? e.class ?? '(anonymous)',
     filePath: e.file_path ?? '',
     startLine: e.start_line ?? 0,
     endLine: e.end_line ?? 0,
-    detail,
+    meta: opts.meta,
+    tags: opts.tags,
+    detail: opts.detail,
   }
 }
 
 export const inventoryEntities: InventoryEntity[] = [
-  ...(data.tools ?? []).map((e) => ent('tool', e, e.description)),
-  ...(data.agents ?? []).map((e) => ent('agent', e, e.sdk)),
-  ...(data.subagents ?? []).map((e) => ent('subagent', e, e.description)),
-  ...(data.skills ?? []).map((e) => ent('skill', e, e.description)),
-  ...(data.mcp_servers ?? []).map((e) => ent('mcp', e, e.sdk)),
+  ...(data.tools ?? []).map((e) => ent('tool', e, { meta: e.language, tags: toolTags(e), detail: e.description })),
+  ...(data.agents ?? []).map((e) =>
+    ent('agent', e, { meta: e.sdk, tags: grantTags((e.tool_refs ?? []).map((r) => r.name)) }),
+  ),
+  ...(data.subagents ?? []).map((e) =>
+    ent('subagent', e, { tags: grantTags(e.tools ?? []), detail: e.description }),
+  ),
+  ...(data.skills ?? []).map((e) => ent('skill', e, { tags: skillTags(e), detail: e.description })),
+  ...(data.mcp_servers ?? []).map((e) =>
+    ent('mcp', e, { meta: e.sdk, tags: e.transport ? [{ label: `${e.transport} transport` }] : [] }),
+  ),
 ]
 
 /** Findings whose surface identity matches a given entity (by file + name). */

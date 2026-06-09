@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { InventoryEntity } from '@/types'
+import type { InventoryEntity, InventoryTag } from '@/types'
 import { inventoryEntities, surfaces } from '@/data/loadScan'
+import { cn } from '@/lib/cn'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { TableCard } from '@/components/ui/TableCard'
@@ -16,12 +17,25 @@ const location = (e: InventoryEntity): string =>
 const sortKey = (e: InventoryEntity, col: SortCol): string =>
   col === 'location' ? location(e) : col === 'name' ? e.name : e.kind
 
-const HEADERS: { id: SortCol | 'detail'; label: string; sortable: boolean; className?: string }[] = [
-  { id: 'kind', label: 'Kind', sortable: true, className: 'w-24' },
-  { id: 'name', label: 'Name', sortable: true },
+const HEADERS: { id: SortCol | 'caps'; label: string; sortable: boolean; className?: string }[] = [
+  { id: 'kind', label: 'Kind', sortable: true, className: 'w-20' },
+  { id: 'name', label: 'Component', sortable: true },
+  { id: 'caps', label: 'Capabilities', sortable: false, className: 'w-full' },
   { id: 'location', label: 'Location', sortable: true },
-  { id: 'detail', label: 'Detail', sortable: false, className: 'w-full' },
 ]
+
+function Chip({ tag }: { tag: InventoryTag }) {
+  return (
+    <span
+      className={cn(
+        'inline-block whitespace-nowrap rounded border border-strong px-1.5 py-0.5 text-[10px] font-medium',
+        tag.risk ? 'text-status-warning' : 'text-fg-muted',
+      )}
+    >
+      {tag.label}
+    </span>
+  )
+}
 
 function InventoryTable() {
   const navigate = useNavigate()
@@ -49,10 +63,10 @@ function InventoryTable() {
             {HEADERS.map((h) => (
               <th
                 key={h.id}
-                className={
-                  'border-b px-2.5 py-2 text-left align-bottom text-[11px] font-medium uppercase tracking-wide text-fg-subtle ' +
-                  (h.className ?? '')
-                }
+                className={cn(
+                  'border-b px-3 py-2.5 text-left align-bottom text-[11px] font-medium uppercase tracking-wide text-fg-subtle',
+                  h.className,
+                )}
               >
                 {h.sortable ? (
                   <button
@@ -73,7 +87,7 @@ function InventoryTable() {
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={HEADERS.length} className="px-2.5 py-6 text-center text-fg-muted">
+              <td colSpan={HEADERS.length} className="px-3 py-6 text-center text-fg-muted">
                 Nothing discovered in this repo.
               </td>
             </tr>
@@ -84,15 +98,22 @@ function InventoryTable() {
                 onClick={() => navigate(e.kind === 'skill' ? `/skills/${e.name}` : `/surfaces/${e.name}`)}
                 className="cursor-pointer border-b last:border-0 hover:bg-inset"
               >
-                <td className="whitespace-nowrap px-2.5 py-2.5 align-top text-xs font-medium uppercase tracking-wide text-fg-muted">
-                  {e.kind}
+                <td className="whitespace-nowrap px-3 py-3 align-top">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-fg-muted">{e.kind}</span>
                 </td>
-                <td className="px-2.5 py-2.5 align-top font-medium text-fg">{e.name}</td>
-                <td className="whitespace-nowrap px-2.5 py-2.5 align-top font-mono text-xs text-fg-subtle">
+                <td className="px-3 py-3 align-top">
+                  <div className="font-medium text-fg">{e.name}</div>
+                  {e.meta && <div className="font-mono text-[11px] text-fg-subtle">{e.meta}</div>}
+                </td>
+                <td className="px-3 py-3 align-top">
+                  <div className="flex flex-wrap gap-1">
+                    {(e.tags ?? []).map((t, ti) => (
+                      <Chip key={ti} tag={t} />
+                    ))}
+                  </div>
+                </td>
+                <td className="whitespace-nowrap px-3 py-3 align-top font-mono text-xs text-fg-subtle">
                   {location(e) || '—'}
-                </td>
-                <td className="px-2.5 py-2.5 align-top text-fg-muted">
-                  <div className="line-clamp-2">{e.detail ?? '—'}</div>
                 </td>
               </tr>
             ))
@@ -103,7 +124,7 @@ function InventoryTable() {
   )
 }
 
-/** Surfaces & Inventory — a clean, sortable inventory of everything discovered. */
+/** Surfaces & Inventory — a sortable, detail-rich inventory of everything discovered. */
 export function InventoryPage() {
   return (
     <div className="flex flex-col gap-6">

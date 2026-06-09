@@ -151,6 +151,13 @@ export interface Skill {
 
 export type InventoryKind = 'tool' | 'agent' | 'subagent' | 'skill' | 'mcp'
 
+/** A capability/fact chip shown for an inventory entity; `risk` flags a
+ *  security-relevant capability (e.g. Bash access, FS writes, external URLs). */
+export interface InventoryTag {
+  label: string
+  risk?: boolean
+}
+
 export interface InventoryEntity {
   kind: InventoryKind
   name: string
@@ -158,6 +165,8 @@ export interface InventoryEntity {
   startLine: number
   endLine: number
   detail?: string
+  meta?: string // sdk / language / transport
+  tags?: InventoryTag[]
 }
 
 // ── platform view types used by shared components ───────────────
