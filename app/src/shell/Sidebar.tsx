@@ -2,9 +2,9 @@ import { NavLink } from 'react-router-dom'
 import { NAV } from './nav'
 import { cn } from '@/lib/cn'
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   return (
-    <nav className="overflow-auto border-r bg-surface px-2 py-3">
+    <nav className="h-full overflow-auto border-r bg-surface px-2 py-3">
       <ul className="text-sm">
         {NAV.map((group, gi) => (
           <li key={gi}>
@@ -19,6 +19,7 @@ export function Sidebar() {
                   <NavLink
                     to={item.to}
                     end={item.to === '/'}
+                    onClick={onNavigate}
                     className={({ isActive }) =>
                       cn(
                         'block rounded-md px-2.5 py-[7px] text-fg-muted',
