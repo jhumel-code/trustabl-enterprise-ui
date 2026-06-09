@@ -1,0 +1,82 @@
+{
+  "$meta": {
+    "name": "Trustabl Enterprise",
+    "version": "0.1.0",
+    "note": "Primitive scales + a semantic layer with light/dark values (bespoke format — resolve {color.x.y} aliases when generating Tailwind / CSS vars / Figma variables). Self-hosted: no external font CDN — bundle Inter + JetBrains Mono locally.",
+    "themes": ["dark", "light"],
+    "defaultTheme": "dark"
+  },
+  "color": {
+    "primitive": {
+      "teal":  { "50": "#f0fdfa", "100": "#ccfbf1", "200": "#99f6e4", "300": "#5eead4", "400": "#2dd4bf", "500": "#14b8a6", "600": "#0d9488", "700": "#0f766e", "800": "#115e59", "900": "#134e4a", "950": "#042f2e" },
+      "slate": { "50": "#f8fafc", "100": "#f1f5f9", "200": "#e2e8f0", "300": "#cbd5e1", "400": "#94a3b8", "500": "#64748b", "600": "#475569", "700": "#334155", "800": "#1e293b", "900": "#0f172a", "950": "#020617" },
+      "red":    { "400": "#f87171", "500": "#ef4444", "600": "#dc2626", "700": "#b91c1c" },
+      "orange": { "400": "#fb923c", "500": "#f97316", "600": "#ea580c" },
+      "amber":  { "400": "#fbbf24", "500": "#f59e0b", "600": "#d97706" },
+      "blue":   { "400": "#60a5fa", "500": "#3b82f6", "600": "#2563eb" },
+      "green":  { "400": "#4ade80", "500": "#22c55e", "600": "#16a34a" },
+      "sky":    { "500": "#0ea5e9" }
+    },
+    "semantic": {
+      "brand":              { "dark": "{color.primitive.teal.400}", "light": "{color.primitive.teal.600}" },
+      "brand.emphasis":     { "dark": "{color.primitive.teal.300}", "light": "{color.primitive.teal.700}" },
+      "bg.canvas":          { "dark": "{color.primitive.slate.950}", "light": "{color.primitive.slate.50}" },
+      "bg.surface":         { "dark": "{color.primitive.slate.900}", "light": "#ffffff" },
+      "bg.surface.raised":  { "dark": "{color.primitive.slate.800}", "light": "#ffffff" },
+      "bg.inset":           { "dark": "{color.primitive.slate.800}", "light": "{color.primitive.slate.100}" },
+      "fg.default":         { "dark": "{color.primitive.slate.100}", "light": "{color.primitive.slate.900}" },
+      "fg.muted":           { "dark": "{color.primitive.slate.400}", "light": "{color.primitive.slate.500}" },
+      "fg.subtle":          { "dark": "{color.primitive.slate.500}", "light": "{color.primitive.slate.400}" },
+      "fg.onBrand":         { "dark": "{color.primitive.slate.950}", "light": "#ffffff" },
+      "border.default":     { "dark": "{color.primitive.slate.800}", "light": "{color.primitive.slate.200}" },
+      "border.strong":      { "dark": "{color.primitive.slate.700}", "light": "{color.primitive.slate.300}" },
+      "focus.ring":         { "dark": "{color.primitive.teal.400}", "light": "{color.primitive.teal.600}" }
+    },
+    "severity": {
+      "critical": { "fg": "#ffffff", "bg": "{color.primitive.red.700}",    "subtle": "#7f1d1d" },
+      "high":     { "fg": "#ffffff", "bg": "{color.primitive.orange.600}", "subtle": "#7c2d12" },
+      "medium":   { "fg": "#1f2937", "bg": "{color.primitive.amber.500}",  "subtle": "#78350f" },
+      "low":      { "fg": "#ffffff", "bg": "{color.primitive.blue.600}",   "subtle": "#1e3a8a" },
+      "info":     { "fg": "#ffffff", "bg": "{color.primitive.slate.500}",  "subtle": "#334155" }
+    },
+    "status": {
+      "success": "{color.primitive.green.600}",
+      "warning": "{color.primitive.amber.600}",
+      "danger":  "{color.primitive.red.600}",
+      "info":    "{color.primitive.sky.500}",
+      "neutral": "{color.primitive.slate.500}"
+    },
+    "coverage": {
+      "yes":     "{color.primitive.green.600}",
+      "partial": "{color.primitive.amber.600}",
+      "no":      "{color.primitive.red.600}"
+    }
+  },
+  "typography": {
+    "family": {
+      "sans": "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+      "mono": "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    },
+    "size": { "xs": "12px", "sm": "13px", "base": "14px", "md": "16px", "lg": "18px", "xl": "22px", "2xl": "28px", "3xl": "34px" },
+    "weight": { "regular": 400, "medium": 500, "semibold": 600, "bold": 700 },
+    "leading": { "tight": 1.2, "normal": 1.5, "relaxed": 1.7 },
+    "tracking": { "tight": "-0.01em", "normal": "0", "wide": "0.04em" }
+  },
+  "space": { "0": "0", "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px", "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px" },
+  "radius": { "none": "0", "sm": "4px", "md": "6px", "lg": "8px", "xl": "12px", "2xl": "16px", "full": "9999px" },
+  "shadow": {
+    "sm": "0 1px 2px rgba(0,0,0,0.20)",
+    "md": "0 4px 12px rgba(0,0,0,0.28)",
+    "lg": "0 12px 32px rgba(0,0,0,0.40)",
+    "focus": "0 0 0 3px rgba(45,212,191,0.45)"
+  },
+  "motion": {
+    "duration": { "fast": "120ms", "base": "200ms", "slow": "320ms" },
+    "easing": { "standard": "cubic-bezier(0.2,0,0,1)", "emphasized": "cubic-bezier(0.3,0,0,1)" }
+  },
+  "layout": {
+    "appShell": { "sidebar": "248px", "topbar": "56px", "rightRail": "320px", "contentMax": "1440px" },
+    "breakpoint": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px", "2xl": "1536px" },
+    "z": { "base": 0, "sticky": 100, "drawer": 200, "modal": 300, "popover": 400, "toast": 500 }
+  }
+}

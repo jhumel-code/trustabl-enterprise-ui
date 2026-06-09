@@ -1,0 +1,73 @@
+# Flagship screen, expressed in the page DSL (validates against page-spec.schema.json).
+id: scan-overview
+route: /repos/:repoId/scans/:scanId
+title: Scan overview
+summary: One scan's readiness, findings, and provenance — the trust-wedge screen.
+persona: [security-lead, developer, compliance]
+permission: findings:read
+layout: dashboard-grid
+breadcrumbs: ["Repositories", "{repo.name}", "Scan {scan.id}"]
+
+data:
+  scan:     { entity: Scan, by: route.scanId }      # engine: read-only, immutable per ScanID
+  repo:     { entity: Repo, by: route.repoId }      # platform
+  findings: { entity: "Finding[]", where: { scanId: route.scanId } }   # engine + platform overlay (status/waiver) joined at read time
+  surfaces: { entity: "Surface[]", where: { scanId: route.scanId } }   # engine
+  gate:     { entity: Gate, where: { scanId: route.scanId } }          # platform: derived from the --strict threshold
+
+regions:
+  header:
+    # Determinism made visible — the wedge, top of the page.
+    - ScanProvenanceBar:
+        scanId: "{scan.id}"
+        rulesSource: "{scan.rulesSource}"
+        rulesVersion: "{scan.rulesVersion}"        # commit SHA or bundle digest — never semver
+        fromCache: "{scan.rulesFromCache}"
+        origin: "{scan.rulesOrigin}"               # signed channel | unsigned | custom
+        watermark: "{scan.rulesOrigin.watermark}"  # banner shown ONLY for a not-blessed scan
+        stale: "{scan.rulesStale}"
+        schemaNewer: "{scan.rulesSchemaNewer}"
+        skipped: "{scan.rulesSkipped}"
+        offlineBadge: true
+    # GateStatus is platform-derived from the --strict threshold — bind off {gate.*}, NOT {scan.*}.
+    - GateStatus: { status: "{gate.status}", trippedBy: "{gate.trippedBy}" }
+
+  grid:
+    - ScoreGauge: { value: "{scan.overallScore}", label: "Readiness" }
+    - ProjectedScoreLadder: { value: "{scan.projectedScores}" }
+    - Stat: { label: Critical, value: "{findings | severity=critical | count}", tone: severity.critical }
+    - Stat: { label: High,     value: "{findings | severity=high | count}",     tone: severity.high }
+    - Stat: { label: Medium,   value: "{findings | severity=medium | count}",   tone: severity.medium }
+    - component: Tabs
+      props: { default: findings }
+      children:
+        - component: FindingTable
+          # location renders file:startLine–endLine; status/waiver are platform overlay (joined at read time)
+          props: { tab: findings, groupBy: severity, columns: [severity, title, scope, location, confidence, status] }
+          bind: "{findings}"
+        - component: SurfaceList
+          props: { tab: surfaces }
+          bind: "{surfaces}"
+        - component: InventoryTree
+          props: { tab: inventory, scanId: "{scan.id}" }
+        - component: CoveragePanel
+          props: { tab: coverage }
+          bind: "{scan.coverage}"
+
+  aside:
+    - FilterPanel: { facets: [severity, category, scope, surface, status] }
+    - RuleProvenanceCard: { rulesVersion: "{scan.rulesVersion}", source: "{scan.rulesSource}" }
+
+states:
+  loading: skeleton
+  empty:
+    when: "findings.length == 0"
+    component: EmptyState
+    props: { variant: clean-scan, title: "No findings ≥ info", note: "Reproducible at rules {scan.rulesVersion}." }
+  error: { component: ErrorState }
+  forbidden: { component: ForbiddenState, props: { need: findings:read } }
+
+actions:
+  - { id: export-sarif, label: Export SARIF, kind: secondary }
+  - { id: open-diff, label: Compare scans, kind: ghost }
+  - { id: rescan, label: Re-scan, kind: primary, permission: scan:run }

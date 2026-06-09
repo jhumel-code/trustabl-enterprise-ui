@@ -1,0 +1,57 @@
+/* Semantic design tokens (from ../../design-tokens.json).
+   Dark is the default; [data-theme="light"] swaps the semantic layer.
+   Severity / status / coverage are theme-independent (tuned for AA on dark). */
+
+:root,
+[data-theme='dark'] {
+  --brand: #2dd4bf;
+  --brand-emphasis: #5eead4;
+  --bg-canvas: #020617;
+  --bg-surface: #0f172a;
+  --bg-surface-raised: #1e293b;
+  --bg-inset: #1e293b;
+  --fg-default: #f1f5f9;
+  --fg-muted: #94a3b8;
+  --fg-subtle: #64748b;
+  --fg-onbrand: #020617;
+  --border-default: #1e293b;
+  --border-strong: #334155;
+  --focus-ring: #2dd4bf;
+}
+
+[data-theme='light'] {
+  --brand: #0d9488;
+  --brand-emphasis: #0f766e;
+  --bg-canvas: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #ffffff;
+  --bg-inset: #f1f5f9;
+  --fg-default: #0f172a;
+  --fg-muted: #64748b;
+  --fg-subtle: #94a3b8;
+  --fg-onbrand: #ffffff;
+  --border-default: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --focus-ring: #0d9488;
+}
+
+:root {
+  --sev-critical: #b91c1c;
+  --sev-high: #ea580c;
+  --sev-medium: #f59e0b;
+  --sev-low: #2563eb;
+  --sev-info: #64748b;
+  --sev-critical-subtle: #7f1d1d;
+  --sev-high-subtle: #7c2d12;
+  --sev-medium-subtle: #78350f;
+  --sev-low-subtle: #1e3a8a;
+  --sev-info-subtle: #334155;
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-danger: #dc2626;
+  --status-info: #0ea5e9;
+  --status-neutral: #64748b;
+  --cov-yes: #16a34a;
+  --cov-partial: #d97706;
+  --cov-no: #dc2626;
+}

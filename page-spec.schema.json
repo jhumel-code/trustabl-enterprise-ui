@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://trustabl.ai/schemas/page-spec.json",
+  "title": "Trustabl Enterprise Page Spec",
+  "description": "Declarative description of one screen. Consumed by a wireframe/layout/code generator together with design-tokens.json, the component library, and data-model.md. A {curly} string is a binding into `data`. The $id is a stable identifier, not a fetch location — every $ref is local (#/definitions) and the schema validates fully offline (air-gap principle).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "route", "title", "layout", "regions"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "stable kebab-case page id" },
+    "route": { "type": "string", "description": "URL pattern, e.g. /orgs/:orgId/repos/:repoId/scans/:scanId" },
+    "title": { "type": "string" },
+    "summary": { "type": "string", "description": "one line: what the user does here" },
+    "persona": {
+      "type": "array",
+      "items": { "enum": ["security-lead", "developer", "compliance", "platform-admin", "exec"] }
+    },
+    "permission": { "type": "string", "description": "platform RBAC scope required (e.g. findings:read, policy:write, settings:admin) — one of data-model.md > Role.permissions[] (non-exhaustive). The engine has no permission model; RBAC is platform-domain." },
+    "layout": {
+      "description": "layout template (see design-system.md > Layout grammar). `app-shell` is the implicit outer frame, NOT a selectable page layout.",
+      "enum": ["list-detail", "dashboard-grid", "split", "wizard", "settings-form", "full-bleed", "auth", "empty"]
+    },
+    "breadcrumbs": { "type": "array", "items": { "type": "string" } },
+    "data": {
+      "type": "object",
+      "description": "named data bindings into data-model entities; referenced elsewhere as {name} or {name.field}",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "entity": { "type": "string", "description": "entity name from data-model.md, e.g. Scan, Finding[], Surface[]" },
+          "by": { "type": "string", "description": "single-record lookup key, e.g. route.scanId" },
+          "where": { "type": "object", "description": "collection filter, e.g. { scanId: route.scanId }" },
+          "sort": { "type": "string" },
+          "queryScope": { "description": "collection query scope; org/team are platform-domain. Distinct from Finding.scope (tool|agent|subagent|skill|repo).", "enum": ["org", "repo", "scan", "team"] }
+        }
+      }
+    },
+    "regions": {
+      "type": "object",
+      "description": "named slots defined by the chosen layout template; each holds an ordered list of nodes. Region keys are constrained per layout by the allOf block below (see design-system.md > Layout grammar).",
+      "additionalProperties": { "type": "array", "items": { "$ref": "#/definitions/node" } }
+    },
+    "states": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "non-happy-path renders the generator must also produce",
+      "properties": {
+        "loading": { "enum": ["skeleton", "spinner", "none"] },
+        "empty": { "$ref": "#/definitions/state" },
+        "error": { "$ref": "#/definitions/state" },
+        "forbidden": { "$ref": "#/definitions/state" }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "description": "page-level actions (toolbar / header)",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "kind": { "enum": ["primary", "secondary", "ghost", "danger", "status"], "default": "secondary" },
+          "permission": { "type": "string", "description": "platform RBAC scope (see data-model.md > Role.permissions[], non-exhaustive)" },
+          "confirm": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    { "if": { "properties": { "layout": { "const": "list-detail" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["list", "detail"] } } } } },
+    { "if": { "properties": { "layout": { "const": "dashboard-grid" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["header", "grid", "aside"] } } } } },
+    { "if": { "properties": { "layout": { "const": "split" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["left", "right"] } } } } },
+    { "if": { "properties": { "layout": { "const": "wizard" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["steps", "body", "footer"] } } } } },
+    { "if": { "properties": { "layout": { "const": "settings-form" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["nav", "form", "aside"] } } } } },
+    { "if": { "properties": { "layout": { "const": "full-bleed" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["main"] } } } } },
+    { "if": { "properties": { "layout": { "const": "auth" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["panel"] } } } } },
+    { "if": { "properties": { "layout": { "const": "empty" } }, "required": ["layout"] },
+      "then": { "properties": { "regions": { "propertyNames": { "enum": ["body"] } } } } }
+  ],
+  "definitions": {
+    "node": {
+      "description": "a component instance. Shorthand { Component: {props} } OR longform { component, props, children }. The component name is NOT schema-validated — it must resolve to an entry in design-system.md > Component library; the generator rejects unknown components.",
+      "oneOf": [
+        {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 1,
+          "description": "shorthand: single key = component name from the library; value = props",
+          "additionalProperties": { "type": "object" }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["component"],
+          "properties": {
+            "component": { "type": "string", "description": "component name from design-system.md" },
+            "props": { "type": "object" },
+            "bind": { "type": "string", "description": "data binding, e.g. {findings}" },
+            "when": { "type": "string", "description": "conditional render expression, e.g. findings.length == 0" },
+            "children": { "type": "array", "items": { "$ref": "#/definitions/node" } }
+          }
+        }
+      ]
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "when": { "type": "string" },
+        "component": { "type": "string", "description": "usually EmptyState / ErrorState" },
+        "props": { "type": "object" }
+      }
+    }
+  }
+}

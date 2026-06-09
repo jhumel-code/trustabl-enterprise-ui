@@ -1,0 +1,863 @@
+{
+  "scan_id": "scan_fdcdb91c24525c04",
+  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/email-agent",
+  "languages": [
+    "typescript",
+    "javascript"
+  ],
+  "sdks": [
+    "claude_agent_sdk"
+  ],
+  "has_shell_invocations": false,
+  "manifest": {
+    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/email-agent",
+    "is_remote": false,
+    "python_files": [],
+    "typescript_files": [
+      "agent/.claude/skills/action-creator/templates/archive-old-newsletters.ts",
+      "agent/.claude/skills/action-creator/templates/forward-bug-report.ts",
+      "agent/.claude/skills/action-creator/templates/send-payment-reminder.ts",
+      "agent/.claude/skills/listener-creator/templates/ai-classifier.ts",
+      "agent/.claude/skills/listener-creator/templates/auto-archive.ts",
+      "agent/.claude/skills/listener-creator/templates/package-tracker.ts",
+      "agent/.claude/skills/listener-creator/templates/urgent-watcher.ts",
+      "agent/custom_scripts/actions/add-expense.ts",
+      "agent/custom_scripts/actions/add-income.ts",
+      "agent/custom_scripts/actions/archive-old-newsletters.ts",
+      "agent/custom_scripts/actions/create-task.ts",
+      "agent/custom_scripts/actions/forward-bugs-to-engineering.ts",
+      "agent/custom_scripts/actions/label-urgent-customer-support.ts",
+      "agent/custom_scripts/actions/update-task-status.ts",
+      "agent/custom_scripts/listeners/example-listener.ts",
+      "agent/custom_scripts/listeners/finance-email-labeler.ts",
+      "agent/custom_scripts/listeners/finance-email-tracker.ts",
+      "agent/custom_scripts/listeners/todo-extractor.ts",
+      "agent/custom_scripts/types.ts",
+      "agent/custom_scripts/ui-states/financial-dashboard.ts",
+      "agent/custom_scripts/ui-states/task-board.ts",
+      "agent/email-api.d.ts",
+      "agent/email-api.ts",
+      "ccsdk/actions-manager.ts",
+      "ccsdk/ai-client.ts",
+      "ccsdk/component-manager.ts",
+      "ccsdk/custom-tools.ts",
+      "ccsdk/email-agent-prompt.ts",
+      "ccsdk/listeners-manager.ts",
+      "ccsdk/log-writer.ts",
+      "ccsdk/message-queue.ts",
+      "ccsdk/session.ts",
+      "ccsdk/types.ts",
+      "ccsdk/ui-state-manager.ts",
+      "ccsdk/websocket-handler.ts",
+      "client/App.tsx",
+      "client/components/ActionButton.tsx",
+      "client/components/ActiveListenersPanel.tsx",
+      "client/components/ChatInterface.tsx",
+      "client/components/EmailDisplay.tsx",
+      "client/components/EmailHTMLRenderer.tsx",
+      "client/components/EmailViewer.tsx",
+      "client/components/InboxView.tsx",
+      "client/components/ListenerDisplay.tsx",
+      "client/components/ScreenshotModeToggle.tsx",
+      "client/components/TabNavigation.tsx",
+      "client/components/custom/ComponentRegistry.ts",
+      "client/components/custom/FinancialDashboard.tsx",
+      "client/components/custom/TaskBoard.tsx",
+      "client/components/message/AssistantMessage.tsx",
+      "client/components/message/ComponentRenderer.tsx",
+      "client/components/message/MessageRenderer.tsx",
+      "client/components/message/SystemMessage.tsx",
+      "client/components/message/UserMessage.tsx",
+      "client/components/message/types.ts",
+      "client/components/views/FinancialDashboardView.tsx",
+      "client/components/views/TaskBoardView.tsx",
+      "client/context/ScreenshotModeContext.tsx",
+      "client/hooks/useComponentTabs.tsx",
+      "client/hooks/useListenerLogs.ts",
+      "client/hooks/useListeners.ts",
+      "client/hooks/useUIState.ts",
+      "client/hooks/useWebSocket.ts",
+      "client/index.tsx",
+      "client/store/screenshotMode.ts",
+      "client/utils/placeholders.ts",
+      "database/config.ts",
+      "database/database-manager.ts",
+      "database/email-db.ts",
+      "database/email-search.ts",
+      "database/email-sync.ts",
+      "database/imap-manager.ts",
+      "server/endpoints/emails.ts",
+      "server/endpoints/index.ts",
+      "server/endpoints/listeners.ts",
+      "server/endpoints/sync.ts",
+      "server/endpoints/ui-states.ts",
+      "server/index.ts",
+      "server/server.ts"
+    ],
+    "javascript_files": [
+      "tailwind.config.js"
+    ],
+    "yaml_files": [],
+    "json_files": [
+      ".releaserc.json",
+      "package-lock.json",
+      "package.json",
+      "tsconfig.json"
+    ],
+    "markdown_files": [
+      "ACTIONS_SPEC.md",
+      "CHANGELOG.md",
+      "CLAUDE.md",
+      "LISTENERS_SPEC.md",
+      "README.md",
+      "README_LISTENER.md",
+      "UI_STATE_COMPONENTS_SPEC.md",
+      "UI_STATE_SYSTEM.md",
+      "agent/.claude/agents/inbox-searcher.md",
+      "agent/.claude/skills/action-creator/SKILL.md",
+      "agent/.claude/skills/listener-creator/SKILL.md",
+      "agent/CLAUDE.MD",
+      "agent/data/PROFILE.MD",
+      "database/migrations/README.md",
+      "recursive-code-generation.md"
+    ],
+    "has_claude_sdk_dependency": false,
+    "has_openshell_artifact": false,
+    "components": [
+      {
+        "kind": "claude_md",
+        "path": "CLAUDE.md"
+      },
+      {
+        "kind": "dependency_manifest",
+        "path": "package.json",
+        "language": "typescript"
+      },
+      {
+        "kind": "dependency_manifest",
+        "path": "requirements.txt",
+        "language": "python"
+      },
+      {
+        "kind": "skill",
+        "path": "agent/.claude/skills/action-creator/SKILL.md"
+      },
+      {
+        "kind": "skill",
+        "path": "agent/.claude/skills/listener-creator/SKILL.md"
+      },
+      {
+        "kind": "subagent",
+        "path": "agent/.claude/agents/inbox-searcher.md"
+      }
+    ]
+  },
+  "tools": [
+    {
+      "name": "search_inbox",
+      "kind": "claude_sdk_tool",
+      "language": "typescript",
+      "file_path": "ccsdk/custom-tools.ts",
+      "start_line": 28,
+      "end_line": 113,
+      "description": "Search emails in the inbox using Gmail query syntax",
+      "has_typed_params": true,
+      "param_names": [
+        "gmailQuery"
+      ],
+      "facts": {
+        "writes_fs": "true"
+      }
+    },
+    {
+      "name": "read_emails",
+      "kind": "claude_sdk_tool",
+      "language": "typescript",
+      "file_path": "ccsdk/custom-tools.ts",
+      "start_line": 115,
+      "end_line": 168,
+      "description": "Read multiple emails by their IDs to get full content and details",
+      "has_typed_params": true,
+      "param_names": [
+        "ids"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "sdk": "claude_agent_sdk",
+      "class": "QueryMainAgent",
+      "language": "typescript",
+      "file_path": "ccsdk/ai-client.ts",
+      "start_line": 86,
+      "end_line": 89,
+      "name": "AIClient.queryStream",
+      "kwargs": {
+        "children": {
+          "options": {
+            "value": {
+              "kind": "name_ref",
+              "text": "mergedOptions"
+            }
+          }
+        }
+      },
+      "tool_refs": [
+        {
+          "name": "Task",
+          "external": true
+        },
+        {
+          "name": "Bash",
+          "external": true
+        },
+        {
+          "name": "Glob",
+          "external": true
+        },
+        {
+          "name": "Grep",
+          "external": true
+        },
+        {
+          "name": "LS",
+          "external": true
+        },
+        {
+          "name": "Read",
+          "external": true
+        },
+        {
+          "name": "Edit",
+          "external": true
+        },
+        {
+          "name": "Write",
+          "external": true
+        },
+        {
+          "name": "WebFetch",
+          "external": true
+        },
+        {
+          "name": "TodoWrite",
+          "external": true
+        },
+        {
+          "name": "WebSearch",
+          "external": true
+        },
+        {
+          "name": "mcp__email__search_inbox",
+          "external": true
+        },
+        {
+          "name": "mcp__email__read_emails",
+          "external": true
+        },
+        {
+          "name": "Skill",
+          "external": true
+        }
+      ],
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": true
+    }
+  ],
+  "hosted_tools": null,
+  "mcp_servers": [
+    {
+      "class": "createSdkMcpServer",
+      "transport": "sdk",
+      "sdk": "claude_agent_sdk",
+      "language": "typescript",
+      "file_path": "ccsdk/custom-tools.ts",
+      "start_line": 24,
+      "end_line": 170
+    }
+  ],
+  "subagents": [
+    {
+      "name": "inbox-searcher",
+      "description": "Email inbox search specialist, takes in appropriate context for the email and a goal of what to search for. Return the answer to the question.",
+      "tools": [
+        "Read",
+        "Bash",
+        "Glob",
+        "Grep",
+        "mcp__email__search_inbox",
+        "mcp__email__read_emails"
+      ],
+      "tool_grants": [
+        {
+          "tool": "Read",
+          "raw": "Read"
+        },
+        {
+          "tool": "Bash",
+          "raw": "Bash"
+        },
+        {
+          "tool": "Glob",
+          "raw": "Glob"
+        },
+        {
+          "tool": "Grep",
+          "raw": "Grep"
+        },
+        {
+          "tool": "MCP",
+          "pattern": "email__search_inbox",
+          "raw": "mcp__email__search_inbox"
+        },
+        {
+          "tool": "MCP",
+          "pattern": "email__read_emails",
+          "raw": "mcp__email__read_emails"
+        }
+      ],
+      "file_path": "agent/.claude/agents/inbox-searcher.md",
+      "start_line": 1,
+      "end_line": 5
+    }
+  ],
+  "skills": [
+    {
+      "name": "action-creator",
+      "description": "Creates user-specific one-click action templates that execute email operations when clicked in the chat interface. Use when user wants reusable actions for their specific workflows (send payment reminder to ACME Corp, forward bugs to engineering, archive old newsletters from specific sources).",
+      "allowed_tools": [
+        "Write",
+        "Edit",
+        "Read",
+        "Glob"
+      ],
+      "tool_grants": [
+        {
+          "tool": "Write",
+          "raw": "Write"
+        },
+        {
+          "tool": "Edit",
+          "raw": "Edit"
+        },
+        {
+          "tool": "Read",
+          "raw": "Read"
+        },
+        {
+          "tool": "Glob",
+          "raw": "Glob"
+        }
+      ],
+      "external_urls": [
+        "https://api.example.com/data"
+      ],
+      "bundled_files": [
+        {
+          "path": "agent/.claude/skills/action-creator/templates/archive-old-newsletters.ts",
+          "kind": "script"
+        },
+        {
+          "path": "agent/.claude/skills/action-creator/templates/forward-bug-report.ts",
+          "kind": "script"
+        },
+        {
+          "path": "agent/.claude/skills/action-creator/templates/send-payment-reminder.ts",
+          "kind": "script"
+        }
+      ],
+      "file_path": "agent/.claude/skills/action-creator/SKILL.md",
+      "start_line": 1,
+      "end_line": 5
+    },
+    {
+      "name": "listener-creator",
+      "description": "Creates event-driven email listeners that monitor for specific conditions (like urgent emails from boss, newsletters to archive, package tracking) and execute custom actions. Use when user wants to be notified about emails, automatically handle certain emails, or set up email automation workflows.",
+      "allowed_tools": [
+        "Write",
+        "Edit",
+        "Read",
+        "Glob"
+      ],
+      "tool_grants": [
+        {
+          "tool": "Write",
+          "raw": "Write"
+        },
+        {
+          "tool": "Edit",
+          "raw": "Edit"
+        },
+        {
+          "tool": "Read",
+          "raw": "Read"
+        },
+        {
+          "tool": "Glob",
+          "raw": "Glob"
+        }
+      ],
+      "bundled_files": [
+        {
+          "path": "agent/.claude/skills/listener-creator/templates/ai-classifier.ts",
+          "kind": "script"
+        },
+        {
+          "path": "agent/.claude/skills/listener-creator/templates/auto-archive.ts",
+          "kind": "script"
+        },
+        {
+          "path": "agent/.claude/skills/listener-creator/templates/package-tracker.ts",
+          "kind": "script"
+        },
+        {
+          "path": "agent/.claude/skills/listener-creator/templates/urgent-watcher.ts",
+          "kind": "script"
+        }
+      ],
+      "file_path": "agent/.claude/skills/listener-creator/SKILL.md",
+      "start_line": 1,
+      "end_line": 5
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "version": "^0.1.28",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 26,
+      "end_line": 26
+    },
+    {
+      "name": "@anthropic-ai/sdk",
+      "version": "^0.68.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 27,
+      "end_line": 27
+    },
+    {
+      "name": "@tailwindcss/postcss",
+      "version": "^4.1.11",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 28,
+      "end_line": 28
+    },
+    {
+      "name": "@tailwindcss/typography",
+      "version": "^0.5.19",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 42,
+      "end_line": 42
+    },
+    {
+      "name": "@types/bun",
+      "version": "^1.2.21",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 43,
+      "end_line": 43
+    },
+    {
+      "name": "@types/jest",
+      "version": "^30.0.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 44,
+      "end_line": 44
+    },
+    {
+      "name": "@types/mailparser",
+      "version": "^3.4.6",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 45,
+      "end_line": 45
+    },
+    {
+      "name": "@types/node",
+      "version": "^24.5.1",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 46,
+      "end_line": 46
+    },
+    {
+      "name": "@types/node-imap",
+      "version": "^0.9.3",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 47,
+      "end_line": 47
+    },
+    {
+      "name": "autoprefixer",
+      "version": "^10.4.21",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 48,
+      "end_line": 48
+    },
+    {
+      "name": "dotenv",
+      "version": "^17.2.1",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 29,
+      "end_line": 29
+    },
+    {
+      "name": "jest",
+      "version": "^29.7.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 9,
+      "end_line": 9
+    },
+    {
+      "name": "jotai",
+      "version": "^2.14.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 30,
+      "end_line": 30
+    },
+    {
+      "name": "knip",
+      "version": "^5.63.1",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 20,
+      "end_line": 20
+    },
+    {
+      "name": "lucide-react",
+      "version": "^0.539.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 31,
+      "end_line": 31
+    },
+    {
+      "name": "mailparser",
+      "version": "^3.7.4",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 32,
+      "end_line": 32
+    },
+    {
+      "name": "node-imap",
+      "version": "^0.9.6",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 33,
+      "end_line": 33
+    },
+    {
+      "name": "postcss",
+      "version": "^8.5.6",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 51,
+      "end_line": 51
+    },
+    {
+      "name": "react",
+      "version": "^18.3.1",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 34,
+      "end_line": 34
+    },
+    {
+      "name": "react-dom",
+      "version": "^18.3.1",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 35,
+      "end_line": 35
+    },
+    {
+      "name": "react-markdown",
+      "version": "^10.1.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 36,
+      "end_line": 36
+    },
+    {
+      "name": "remark-gfm",
+      "version": "^4.0.1",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 37,
+      "end_line": 37
+    },
+    {
+      "name": "sqlite3",
+      "version": "^5.1.7",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 38,
+      "end_line": 38
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^4.1.11",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 52,
+      "end_line": 52
+    },
+    {
+      "name": "ts-jest",
+      "version": "^29.4.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "name": "typescript",
+      "version": "^5.9.2",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 54,
+      "end_line": 54
+    },
+    {
+      "name": "zod",
+      "version": "^3.22.4",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 39,
+      "end_line": 39
+    },
+    {
+      "name": "google-api-python-client",
+      "version": "2.108.0",
+      "ecosystem": "pypi",
+      "source": "requirements.txt",
+      "start_line": 4,
+      "end_line": 4
+    },
+    {
+      "name": "google-auth",
+      "version": "2.23.4",
+      "ecosystem": "pypi",
+      "source": "requirements.txt",
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "name": "google-auth-httplib2",
+      "version": "0.1.1",
+      "ecosystem": "pypi",
+      "source": "requirements.txt",
+      "start_line": 3,
+      "end_line": 3
+    },
+    {
+      "name": "google-auth-oauthlib",
+      "version": "1.1.0",
+      "ecosystem": "pypi",
+      "source": "requirements.txt",
+      "start_line": 2,
+      "end_line": 2
+    }
+  ],
+  "slash_commands": null,
+  "plugin_manifests": null,
+  "claude_settings": null,
+  "findings": [
+    {
+      "rule_id": "META-003",
+      "category": "",
+      "scope": "",
+      "severity": "info",
+      "tool_name": "",
+      "file_path": "ccsdk/ai-client.ts",
+      "start_line": 86,
+      "end_line": 89,
+      "title": "Agent configuration is opaque",
+      "explanation": "Agent configuration is opaque (kwargs come from a variable via **unpack, or tools= is a non-literal expression like a function call); rules cannot evaluate against this agent.",
+      "suggested_fix": "Inline the agent's kwargs at the constructor call site, or move the dynamic configuration into explicit code that Trustabl can analyze.",
+      "confidence": 1
+    },
+    {
+      "rule_id": "CSDK-012",
+      "category": "claude_sdk",
+      "scope": "tool",
+      "severity": "low",
+      "tool_name": "search_inbox",
+      "file_path": "ccsdk/custom-tools.ts",
+      "start_line": 28,
+      "end_line": 113,
+      "title": "TypeScript Claude SDK tool writes to the filesystem",
+      "explanation": "This TypeScript Claude SDK tool writes to the filesystem. If the path or contents derive from tool arguments, a prompt-injected agent can overwrite arbitrary files reachable by the host process. (This is a coarse signal — it flags any filesystem write, not only unnormalized paths, because TS path-normalization analysis is not yet wired.)\n",
+      "suggested_fix": "Confine writes to a dedicated working directory, resolve the final path and verify it stays within that root before writing, and reject absolute or `..`-containing inputs.\n",
+      "confidence": 0.5
+    },
+    {
+      "rule_id": "CSDK-110",
+      "category": "claude_sdk",
+      "scope": "subagent",
+      "severity": "high",
+      "tool_name": "inbox-searcher",
+      "file_path": "agent/.claude/agents/inbox-searcher.md",
+      "start_line": 1,
+      "end_line": 5,
+      "title": "Subagent granted the built-in Bash tool",
+      "explanation": "This subagent's frontmatter grants the built-in `Bash` tool, letting it run arbitrary shell commands. A narrowly-scoped subagent (e.g. a search or read specialist) rarely needs shell access; granting it widens the blast radius if the subagent is compromised or misdirected.\n",
+      "suggested_fix": "Remove `Bash` from the subagent's `tools:` list unless shell access is essential. Prefer specific tools (Read, Grep, Glob) for read-only roles.\n",
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "CSDK-130",
+      "category": "claude_sdk",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "AIClient.queryStream",
+      "file_path": "ccsdk/ai-client.ts",
+      "start_line": 86,
+      "end_line": 89,
+      "title": "TypeScript query() main agent is granted the Bash tool",
+      "explanation": "This `query(...)` call configures the main agent thread with \"Bash\" in its `options.allowedTools`, granting the top-level agent arbitrary shell-command execution. The main thread acts directly on model output in the conversation loop, so a prompt-injected instruction reaches the OS shell with no subagent boundary in between. This is the broadest privilege a Claude TypeScript agent can hold, and unlike the AgentDefinition and `.claude/agents` subagent rules, nothing else inspects the `query()` main thread's tool grant.\n",
+      "suggested_fix": "Remove \"Bash\" from `options.allowedTools` unless shell execution is essential to the agent's task. If it is, pair it with a PreToolUse hook that allowlists the exact commands permitted, and do not run the session under permissionMode: \"bypassPermissions\".\n",
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "CSDK-131",
+      "category": "claude_sdk",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "AIClient.queryStream",
+      "file_path": "ccsdk/ai-client.ts",
+      "start_line": 86,
+      "end_line": 89,
+      "title": "TypeScript query() main agent is granted filesystem-write or web-fetch built-ins",
+      "explanation": "This `query(...)` main agent's `options.allowedTools` includes a filesystem-write built-in (Write/Edit/MultiEdit/NotebookEdit) or WebFetch. Write access lets a prompt-injected main agent rewrite source, configuration, or the `.claude/settings.json` that governs its own permissions; WebFetch pulls attacker-controllable URL content straight back into the loop, which is both a prompt-injection re-entry and a server-side request forgery surface. On the main thread these run with no subagent boundary and no SDK guardrail mechanism.\n",
+      "suggested_fix": "Drop the write and fetch built-ins from `options.allowedTools` unless the task requires them. Scope writes to a dedicated working directory, gate them with a PreToolUse hook, and for fetching, allowlist permitted hosts and block internal, loopback, and link-local address ranges.\n",
+      "confidence": 0.75
+    },
+    {
+      "rule_id": "CSKILL-020",
+      "category": "claude_skill",
+      "scope": "skill",
+      "severity": "medium",
+      "tool_name": "action-creator",
+      "file_path": "agent/.claude/skills/action-creator/SKILL.md",
+      "start_line": 1,
+      "end_line": 5,
+      "title": "Skill fetches untrusted external content",
+      "explanation": "This skill's body references an external http(s) URL. Content fetched from an external source is an indirect-prompt-injection vector — the fetched text can carry instructions the model then follows — and the URL can double as an exfiltration endpoint. External dependencies can also change after the skill is reviewed.\n",
+      "suggested_fix": "Avoid fetching external content from a skill. If a reference is required, pin it to a trusted, version-locked source and treat any fetched content as untrusted data, never as instructions.\n",
+      "confidence": 0.7
+    },
+    {
+      "rule_id": "CSKILL-050",
+      "category": "claude_skill",
+      "scope": "skill",
+      "severity": "high",
+      "tool_name": "action-creator",
+      "file_path": "agent/.claude/skills/action-creator/SKILL.md",
+      "start_line": 1,
+      "end_line": 5,
+      "title": "Model-invocable skill grants side-effecting tools",
+      "explanation": "Claude can auto-invoke this skill (disable-model-invocation is not set) and it pre-approves a side-effecting or exfiltration-capable tool (Bash / Write / Edit / WebFetch / NotebookEdit). The model can therefore be steered — by an ambiguous request or an injected instruction — into triggering the skill and its tools without the user choosing to.\n",
+      "suggested_fix": "Add `disable-model-invocation: true` so only the user can invoke this skill, or narrow allowed-tools to read-only tools (Read, Grep, Glob). Reserve auto-invocation for skills that carry knowledge, not side effects.\n",
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "CSKILL-050",
+      "category": "claude_skill",
+      "scope": "skill",
+      "severity": "high",
+      "tool_name": "listener-creator",
+      "file_path": "agent/.claude/skills/listener-creator/SKILL.md",
+      "start_line": 1,
+      "end_line": 5,
+      "title": "Model-invocable skill grants side-effecting tools",
+      "explanation": "Claude can auto-invoke this skill (disable-model-invocation is not set) and it pre-approves a side-effecting or exfiltration-capable tool (Bash / Write / Edit / WebFetch / NotebookEdit). The model can therefore be steered — by an ambiguous request or an injected instruction — into triggering the skill and its tools without the user choosing to.\n",
+      "suggested_fix": "Add `disable-model-invocation: true` so only the user can invoke this skill, or narrow allowed-tools to read-only tools (Read, Grep, Glob). Reserve auto-invocation for skills that carry knowledge, not side effects.\n",
+      "confidence": 0.8
+    }
+  ],
+  "surfaces": [
+    {
+      "kind": "agent",
+      "name": "AIClient.queryStream",
+      "file_path": "ccsdk/ai-client.ts",
+      "score": 0.6383333333333334,
+      "finding_count": 2,
+      "weighted_severity": 1.085
+    },
+    {
+      "kind": "skill",
+      "name": "action-creator",
+      "file_path": "agent/.claude/skills/action-creator/SKILL.md",
+      "score": 0.72,
+      "finding_count": 2,
+      "weighted_severity": 0.84
+    },
+    {
+      "kind": "subagent",
+      "name": "inbox-searcher",
+      "file_path": "agent/.claude/agents/inbox-searcher.md",
+      "score": 0.79,
+      "finding_count": 1,
+      "weighted_severity": 0.63
+    },
+    {
+      "kind": "skill",
+      "name": "listener-creator",
+      "file_path": "agent/.claude/skills/listener-creator/SKILL.md",
+      "score": 0.8133333333333334,
+      "finding_count": 1,
+      "weighted_severity": 0.5599999999999999
+    },
+    {
+      "kind": "tool",
+      "name": "search_inbox",
+      "file_path": "ccsdk/custom-tools.ts",
+      "score": 0.975,
+      "finding_count": 1,
+      "weighted_severity": 0.075
+    },
+    {
+      "kind": "tool",
+      "name": "read_emails",
+      "file_path": "ccsdk/custom-tools.ts",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    }
+  ],
+  "overall_score": 0.7900272034820456,
+  "projected_scores": {
+    "fix_critical": 0.7900272034820456,
+    "fix_high": 0.9769722003671649,
+    "fix_medium": 0.9955761316872429,
+    "fix_low": 1,
+    "fix_all": 1
+  },
+  "rules_source": "https://github.com/trustabl/trustabl-rules",
+  "rules_version": "d77749c5299d470297ee1040a6c8167a759f7004",
+  "rules_from_cache": true,
+  "rules_schema_version": 12,
+  "rules_origin": {
+    "signed": false
+  },
+  "coverage": {
+    "files_parsed": 80,
+    "files_skipped": 0
+  }
+}

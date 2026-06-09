@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+app/node_modules/
+
+# build output
+dist/
+app/dist/
+
+# logs & local
+*.log
+.DS_Store
+.vite/
+*.local
