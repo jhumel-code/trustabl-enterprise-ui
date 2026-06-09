@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import type { Finding, Severity } from '@/types'
-import { findings, repo, surfaces } from '@/data/loadScan'
+import { findings, surfaces } from '@/data/loadScan'
 import { SEVERITY_ORDER } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { FindingTable } from '@/components/domain/FindingTable'
@@ -28,6 +28,7 @@ const scopeKey = (f: Finding) => (f.scope === '' ? 'meta' : f.scope)
 const sevCount = (s: Severity) => findings.filter((f) => f.severity === s).length
 const scopeOptions = [...new Set(findings.map(scopeKey))].sort()
 const statusOptions = [...new Set(findings.map((f) => f.status))].sort()
+const repoOptions = [...new Set(findings.map((f) => f.repoId).filter(Boolean) as string[])].sort()
 
 /** Findings browser — search, facet filters, sort, full-width table; the detail
  *  opens in a slide-over drawer (matching the Scan-overview finding interaction). */
@@ -37,10 +38,12 @@ export function FindingsPage() {
   const [sevSel, setSevSel] = useState<Set<Severity>>(new Set())
   const [scope, setScope] = useState('all')
   const [status, setStatus] = useState('all')
+  const [repoSel, setRepoSel] = useState('all')
   const [sort, setSort] = useState<Sort>('severity')
   const [selected, setSelected] = useState<Finding | null>(null)
 
-  const active = sevSel.size > 0 || scope !== 'all' || status !== 'all' || query.trim() !== ''
+  const active =
+    sevSel.size > 0 || scope !== 'all' || status !== 'all' || repoSel !== 'all' || query.trim() !== ''
 
   function toggleSev(s: Severity) {
     setSevSel((prev) => {
@@ -54,6 +57,7 @@ export function FindingsPage() {
     setSevSel(new Set())
     setScope('all')
     setStatus('all')
+    setRepoSel('all')
   }
 
   const filtered = useMemo(() => {
@@ -62,6 +66,7 @@ export function FindingsPage() {
       if (sevSel.size && !sevSel.has(f.severity)) return false
       if (scope !== 'all' && scopeKey(f) !== scope) return false
       if (status !== 'all' && f.status !== status) return false
+      if (repoSel !== 'all' && f.repoId !== repoSel) return false
       if (q) {
         const hay = `${f.title} ${f.ruleId} ${f.filePath} ${f.toolName} ${f.category} ${f.explanation}`.toLowerCase()
         if (!hay.includes(q)) return false
@@ -73,14 +78,14 @@ export function FindingsPage() {
       if (sort === 'location') return a.filePath.localeCompare(b.filePath) || a.startLine - b.startLine
       return SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity)
     })
-  }, [query, sevSel, scope, status, sort])
+  }, [query, sevSel, scope, status, repoSel, sort])
 
   return (
     <>
       <div className="flex flex-col gap-6">
         <PageHeader
           title="Findings"
-          subtitle={`${findings.length} findings in ${repo.name} · ${surfaces.length} surfaces`}
+          subtitle={`${findings.length} findings across ${repoOptions.length} ${repoOptions.length === 1 ? 'repository' : 'repositories'} · ${surfaces.length} surfaces`}
         />
 
         {/* severity summary — also filters */}
@@ -113,6 +118,16 @@ export function FindingsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
+          </div>
+          <div className="w-44">
+            <Select value={repoSel} onChange={(e) => setRepoSel(e.target.value)}>
+              <option value="all">All repositories</option>
+              {repoOptions.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </Select>
           </div>
           <div className="w-32">
             <Select value={scope} onChange={(e) => setScope(e.target.value)}>
@@ -154,7 +169,7 @@ export function FindingsPage() {
         {filtered.length > 0 ? (
           <Card className="p-0">
             <div className="overflow-auto p-2">
-              <FindingTable findings={filtered} sort="none" onSelect={setSelected} selected={selected} />
+              <FindingTable findings={filtered} sort="none" showRepo onSelect={setSelected} selected={selected} />
             </div>
           </Card>
         ) : (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { findings, gate, scan, surfaces } from '@/data/loadScan'
+import { getScan } from '@/data/loadScan'
 import { repos } from '@/data/platform'
 import { shortRef } from '@/lib/format'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -15,16 +15,15 @@ import { GateStatus } from '@/components/domain/GateStatus'
 import { SurfaceList } from '@/components/domain/SurfaceList'
 import { FindingTable } from '@/components/domain/FindingTable'
 
-/** Single-repo overview. Only the real scanned repo (email-agent) shows the
- *  loaded scan; demo/unknown repos show an honest empty state rather than
- *  another repo's data. */
+/** Single-repo overview. Shows the repo's real loaded scan; an unknown repo id
+ *  shows an honest empty state rather than another repo's data. */
 export function RepoOverviewPage() {
   const { repoId } = useParams()
   const navigate = useNavigate()
   const toast = useToast()
   const r = repos.find((x) => x.id === repoId)
   const name = r?.name ?? repoId ?? 'Repository'
-  const scanned = Boolean(r && !r.demo)
+  const repoScan = getScan(repoId)
 
   const [rescanOpen, setRescanOpen] = useState(false)
 
@@ -32,21 +31,21 @@ export function RepoOverviewPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title={name}
-        subtitle={scanned ? <>latest scan {shortRef(scan.id)}</> : undefined}
+        subtitle={repoScan ? <>latest scan {shortRef(repoScan.scan.id)}</> : undefined}
         breadcrumb={
           <>
             <Link to="/repos">Repositories</Link> / {name}
           </>
         }
         actions={
-          scanned ? (
+          repoScan ? (
             <>
               <Button variant="secondary" onClick={() => setRescanOpen(true)}>
                 Re-scan
               </Button>
               <Button
                 variant="primary"
-                onClick={() => navigate(`/repos/email-agent/scans/${scan.id}`)}
+                onClick={() => navigate(`/repos/${repoScan.repoId}/scans/${repoScan.scan.id}`)}
               >
                 View scan
               </Button>
@@ -55,35 +54,35 @@ export function RepoOverviewPage() {
         }
       />
 
-      {scanned ? (
+      {repoScan ? (
         <>
           <Card className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <ScoreGauge value={scan.overallScore} />
+              <ScoreGauge value={repoScan.scan.overallScore} />
               <div>
                 <div className="mb-1 text-xs uppercase tracking-wide text-fg-subtle">Overall score</div>
                 <div className="text-sm text-fg-muted">
-                  {findings.length} findings · {surfaces.length} surfaces
+                  {repoScan.findings.length} findings · {repoScan.surfaces.length} surfaces
                 </div>
               </div>
             </div>
 
             <div className="min-w-0">
               <div className="mb-1.5 text-xs uppercase tracking-wide text-fg-subtle">Readiness</div>
-              <ProjectedScoreLadder value={scan.projectedScores} />
+              <ProjectedScoreLadder value={repoScan.scan.projectedScores} />
             </div>
 
-            <GateStatus gate={gate} />
+            <GateStatus gate={repoScan.gate} />
           </Card>
 
           <Card>
             <h2 className="mb-3 text-sm font-semibold text-fg">Surfaces</h2>
-            <SurfaceList surfaces={surfaces} />
+            <SurfaceList surfaces={repoScan.surfaces} />
           </Card>
 
           <Card>
             <h2 className="mb-3 text-sm font-semibold text-fg">Findings</h2>
-            <FindingTable findings={findings} />
+            <FindingTable findings={repoScan.findings} />
           </Card>
 
           <ConfirmDialog

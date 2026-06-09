@@ -1,23 +1,20 @@
 import type { Integration, RepoSummary } from '@/types'
-import { findings, gate, scan } from './loadScan'
+import { repoScans } from './loadScan'
 
 // Mock control-plane (platform-domain) data. The engine never produces these —
 // they live in the control plane. Swap for a real API client later.
 
-const realScanRoute = `/repos/email-agent/scans/${scan.id}`
-
-export const repos: RepoSummary[] = [
-  {
-    id: 'email-agent',
-    name: 'email-agent',
-    score: scan.overallScore,
-    gate: gate.status,
-    findings: findings.length,
-    lastScan: '2026-06-09',
-    trend: [0.61, 0.63, 0.66, 0.7, 0.75, scan.overallScore],
-    scanRoute: realScanRoute,
-  },
-]
+// Fleet derived from the real scans under data/scans/*.json — one repo each.
+export const repos: RepoSummary[] = repoScans.map((rs) => ({
+  id: rs.repoId,
+  name: rs.repoId,
+  score: rs.scan.overallScore,
+  gate: rs.gate.status,
+  findings: rs.findings.length,
+  lastScan: '2026-06-10',
+  trend: [rs.scan.overallScore],
+  scanRoute: `/repos/${rs.repoId}/scans/${rs.scan.id}`,
+}))
 
 export const integrations: Integration[] = [
   { id: 'github', name: 'GitHub', kind: 'SCM', status: 'connected', detail: '4 repos · PR check + SARIF active' },

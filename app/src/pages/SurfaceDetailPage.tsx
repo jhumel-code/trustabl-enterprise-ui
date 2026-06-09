@@ -10,11 +10,12 @@ import { ScopeBadge } from '@/components/domain/ScopeBadge'
 import { FindingList } from '@/components/domain/FindingList'
 import { FindingDetailPanel } from '@/components/domain/FindingDetailPanel'
 
-type SortCol = 'kind' | 'name' | 'location' | 'findings' | 'score'
+type SortCol = 'kind' | 'name' | 'repo' | 'location' | 'findings' | 'score'
 
 const HEADERS: { id: SortCol; label: string; align?: 'right'; className?: string }[] = [
   { id: 'kind', label: 'Kind', className: 'w-20' },
   { id: 'name', label: 'Surface' },
+  { id: 'repo', label: 'Repository' },
   { id: 'location', label: 'Location' },
   { id: 'findings', label: 'Findings', align: 'right' },
   { id: 'score', label: 'Readiness', align: 'right', className: 'w-44' },
@@ -28,6 +29,8 @@ function compare(a: Surface, b: Surface, col: SortCol): number {
       return a.score - b.score
     case 'location':
       return a.filePath.localeCompare(b.filePath)
+    case 'repo':
+      return (a.repoId || '').localeCompare(b.repoId || '')
     case 'name':
       return (a.name || '').localeCompare(b.name || '')
     default:
@@ -95,6 +98,7 @@ export function SurfaceDetailPage() {
                     {s.kind}
                   </td>
                   <td className="px-3 py-3 align-middle font-medium text-fg">{s.name || '(repo)'}</td>
+                  <td className="whitespace-nowrap px-3 py-3 align-middle text-xs text-fg-muted">{s.repoId}</td>
                   <td className="px-3 py-3 align-middle">
                     <div className="max-w-[200px] truncate font-mono text-xs text-fg-subtle" title={s.filePath}>
                       {s.filePath || '—'}

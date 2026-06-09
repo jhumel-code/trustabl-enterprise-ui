@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import type { Finding } from '@/types'
-import { findings, gate, repo, scan, surfaces } from '@/data/loadScan'
+import { getScan } from '@/data/loadScan'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { Drawer } from '@/components/ui/Drawer'
 import { FindingDetailPanel } from '@/components/domain/FindingDetailPanel'
 import { ScanProvenanceBar } from '@/components/domain/ScanProvenanceBar'
@@ -24,21 +25,34 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 /** Flagship screen — mirrors examples/scan-overview.page.yaml. */
 export function ScanOverview() {
   const navigate = useNavigate()
-  const count = (sev: string) => findings.filter((f) => f.severity === sev).length
-  const packs = [...new Set(findings.map((f) => f.category).filter(Boolean))]
+  const { repoId } = useParams()
+  const repoScan = getScan(repoId)
   const [selected, setSelected] = useState<Finding | null>(null)
   const [rescanOpen, setRescanOpen] = useState(false)
+
+  if (!repoScan) {
+    return (
+      <EmptyState
+        title="Scan not found"
+        description="This repository has no loaded scan in this instance."
+      />
+    )
+  }
+
+  const { scan, gate, findings, surfaces, inventory } = repoScan
+  const count = (sev: string) => findings.filter((f) => f.severity === sev).length
+  const packs = [...new Set(findings.map((f) => f.category).filter(Boolean))]
 
   return (
     <>
     <PageHeader
       title="Scan overview"
-      breadcrumb={<>Repositories / <b className="text-fg">{repo.name}</b> / Scan</>}
+      breadcrumb={<>Repositories / <b className="text-fg">{scan.repo}</b> / Scan</>}
       actions={
         <>
           <Button
             variant="ghost"
-            onClick={() => navigate(`/repos/email-agent/scans/${scan.id}/diff/${scan.id}`)}
+            onClick={() => navigate(`/repos/${repoScan.repoId}/scans/${scan.id}/diff/${scan.id}`)}
           >
             Compare scans
           </Button>
@@ -91,7 +105,7 @@ export function ScanOverview() {
                 count: surfaces.length,
                 content: <SurfaceList surfaces={surfaces} />,
               },
-              { id: 'inventory', label: 'Inventory', content: <InventoryTree /> },
+              { id: 'inventory', label: 'Inventory', content: <InventoryTree inventory={inventory} /> },
               { id: 'coverage', label: 'Coverage', content: <CoveragePanel coverage={scan.coverage} /> },
             ]}
           />

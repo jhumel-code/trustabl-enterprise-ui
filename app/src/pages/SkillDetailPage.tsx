@@ -28,6 +28,7 @@ export function SkillDetailPage() {
 
   const skillColumns: { header: string; cell: (s: Skill) => ReactNode; className?: string }[] = [
     { header: 'Skill', cell: (s) => <span className="font-medium">{s.name}</span> },
+    { header: 'Repository', cell: (s) => <span className="text-xs text-fg-muted">{s.repoId}</span> },
     { header: 'Description', cell: (s) => <span className="text-fg-muted">{s.description}</span> },
     { header: 'Tools', cell: (s) => s.allowedTools.length, className: 'text-right tabular-nums' },
     { header: 'Bundled', cell: (s) => s.bundledFiles.length, className: 'text-right tabular-nums' },

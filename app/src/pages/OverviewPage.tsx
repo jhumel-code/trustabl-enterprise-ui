@@ -3,7 +3,7 @@ import { FolderGit2, ShieldCheck, ShieldX, TriangleAlert } from 'lucide-react'
 import type { RepoSummary } from '@/types'
 import { findings } from '@/data/loadScan'
 import { org, repos } from '@/data/platform'
-import { pct } from '@/lib/format'
+import { pct, SEVERITY_ORDER } from '@/lib/format'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -31,6 +31,9 @@ export function OverviewPage() {
   const navigate = useNavigate()
   const toast = useToast()
   const topRepos = [...repos].sort(byRisk).slice(0, TOP_REPOS)
+  const topFindings = [...findings]
+    .sort((a, b) => SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity))
+    .slice(0, 8)
 
   const repoColumns = [
     {
@@ -155,11 +158,16 @@ export function OverviewPage() {
       {/* top findings */}
       <Card className="min-w-0 p-0">
         <div className="flex items-center justify-between border-b px-4 py-3">
-          <h2 className="text-sm font-semibold">Top findings</h2>
-          <span className="text-xs text-fg-muted">{findings.length} open</span>
+          <div>
+            <h2 className="text-sm font-semibold">Top findings</h2>
+            <p className="text-xs text-fg-subtle">Highest severity across the fleet</p>
+          </div>
+          <Link to="/findings" className="shrink-0 text-xs text-brand-emphasis hover:underline">
+            View all {findings.length} →
+          </Link>
         </div>
         <div className="overflow-auto p-2">
-          <FindingTable findings={findings} />
+          <FindingTable findings={topFindings} sort="none" showRepo />
         </div>
       </Card>
     </div>

@@ -1,0 +1,165 @@
+{
+  "scan_id": "scan_c4dada67ea1ea23c",
+  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/openai-mcp-filesystem",
+  "languages": [
+    "python"
+  ],
+  "sdks": [
+    "openai_agents"
+  ],
+  "has_shell_invocations": false,
+  "manifest": {
+    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/openai-mcp-filesystem",
+    "is_remote": false,
+    "python_files": [
+      "main.py"
+    ],
+    "yaml_files": [],
+    "markdown_files": [
+      "SOURCE.md"
+    ],
+    "has_claude_sdk_dependency": false,
+    "has_openshell_artifact": false
+  },
+  "tools": null,
+  "agents": [
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "main.py",
+      "start_line": 10,
+      "end_line": 14,
+      "name": "Assistant",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"Use the tools to read the filesystem and answer questions based on those files.\""
+            }
+          },
+          "mcp_servers": {
+            "value": {
+              "kind": "list",
+              "text": "[mcp_server]",
+              "list": [
+                {
+                  "kind": "name_ref",
+                  "text": "mcp_server"
+                }
+              ]
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"Assistant\""
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": [
+        {
+          "class": "mcp_server",
+          "external": true
+        }
+      ],
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    }
+  ],
+  "hosted_tools": null,
+  "mcp_servers": null,
+  "subagents": null,
+  "skills": null,
+  "dependencies": null,
+  "slash_commands": null,
+  "plugin_manifests": null,
+  "claude_settings": null,
+  "findings": [
+    {
+      "rule_id": "OAI-106",
+      "category": "openai_sdk",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "Assistant",
+      "file_path": "main.py",
+      "start_line": 10,
+      "end_line": 14,
+      "title": "Agent wires MCP servers without input_guardrails",
+      "explanation": "The agent imports tools from one or more MCP servers (mcp_servers=) but has no input_guardrails. MCP tool descriptions are advertised by the MCP server, which is a separate trust boundary; an attacker- controlled or compromised MCP server can craft tool descriptions that bait the agent into harmful actions — the \"tool poisoning\" pattern documented in the MCP threat literature. Detection only fires when mcp_servers is actually configured, so agents without MCP are unaffected.\n",
+      "suggested_fix": "Add at least one @input_guardrail that inspects the user's input AND the resolved tool list before the model is invoked. Pin MCP servers to known-trusted URLs/checksums and document the trust assumption.\n",
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "OAI-201",
+      "category": "openai_sdk",
+      "scope": "repo",
+      "severity": "medium",
+      "tool_name": "",
+      "file_path": "",
+      "start_line": 0,
+      "end_line": 0,
+      "title": "Project uses default OpenAI tracing",
+      "explanation": "The project uses the OpenAI Agents SDK with default tracing enabled. By default, inputs, tool calls, tool outputs, and agent responses are sent to OpenAI's hosted tracing backend. For projects handling sensitive data (PII, credentials, internal documents), this is a data egress channel that is easy to miss.\n",
+      "suggested_fix": "Either disable tracing entirely (set OPENAI_AGENTS_DISABLE_TRACING=1 in the environment) OR register a custom trace processor via agents.tracing.add_trace_processor(...) that redacts sensitive fields before they leave the process.\n",
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "OAI-202",
+      "category": "openai_sdk",
+      "scope": "repo",
+      "severity": "low",
+      "tool_name": "",
+      "file_path": "",
+      "start_line": 0,
+      "end_line": 0,
+      "title": "OpenAI Agents project ships no agent-guidance doc (AGENTS.md/CLAUDE.md)",
+      "explanation": "The project uses the OpenAI Agents SDK in code but ships no agent-guidance doc (AGENTS.md or CLAUDE.md) at the repo root. AGENTS.md is the cross-vendor convention an editing coding agent reads before it acts; with neither file present, any agent that opens this repo has no project-specific guidance on Agent vs SandboxAgent choice, handoff topology, required input/output guardrails, tool_choice settings, or the local test and build commands. The likely consequence is generated code that bypasses the project's safety contracts because nothing in-tree teaches the agent the local rules.\n",
+      "suggested_fix": "Add an AGENTS.md at the repo root (the cross-vendor standard; a CLAUDE.md also satisfies this rule). State whether the project uses Agent or SandboxAgent, list required guardrails (input_guardrails, output_guardrails) and tool_choice conventions, note any handoff or tracing policy, and give the exact test, lint, and build commands. Keep it short and concrete so an editing agent can act on it without re-deriving the conventions.\n",
+      "confidence": 0.9
+    }
+  ],
+  "surfaces": [
+    {
+      "kind": "agent",
+      "name": "Assistant",
+      "file_path": "main.py",
+      "score": 0.79,
+      "finding_count": 1,
+      "weighted_severity": 0.63
+    },
+    {
+      "kind": "repo",
+      "name": "",
+      "file_path": "",
+      "score": 0.8483333333333333,
+      "finding_count": 2,
+      "weighted_severity": 0.45500000000000007
+    }
+  ],
+  "overall_score": 0.8175121555915722,
+  "projected_scores": {
+    "fix_critical": 0.8175121555915722,
+    "fix_high": 0.9101120162932791,
+    "fix_medium": 0.9760772833723653,
+    "fix_low": 1,
+    "fix_all": 1
+  },
+  "rules_source": "https://github.com/trustabl/trustabl-rules",
+  "rules_version": "d77749c5299d470297ee1040a6c8167a759f7004",
+  "rules_from_cache": true,
+  "rules_schema_version": 12,
+  "rules_origin": {
+    "signed": false
+  },
+  "coverage": {
+    "files_parsed": 1,
+    "files_skipped": 0
+  }
+}

@@ -1,0 +1,280 @@
+{
+  "scan_id": "scan_4169d1e583f21a29",
+  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/google-adk-demo",
+  "languages": [
+    "python"
+  ],
+  "sdks": [
+    "google_adk"
+  ],
+  "has_shell_invocations": false,
+  "manifest": {
+    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/google-adk-demo",
+    "is_remote": false,
+    "python_files": [
+      "main.py"
+    ],
+    "yaml_files": [],
+    "markdown_files": [
+      "SOURCE.md"
+    ],
+    "has_claude_sdk_dependency": false,
+    "has_openshell_artifact": false,
+    "components": [
+      {
+        "kind": "dependency_manifest",
+        "path": "pyproject.toml",
+        "language": "python"
+      }
+    ]
+  },
+  "tools": [
+    {
+      "name": "get_weather",
+      "kind": "adk_function_tool",
+      "language": "python",
+      "file_path": "main.py",
+      "start_line": 9,
+      "end_line": 10,
+      "has_typed_params": false,
+      "param_names": [
+        "city"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "sdk": "google_adk",
+      "class": "LlmAgent",
+      "language": "python",
+      "file_path": "main.py",
+      "start_line": 13,
+      "end_line": 20,
+      "name": "root",
+      "kwargs": {
+        "children": {
+          "instruction": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"You are a helpful assistant.\""
+            }
+          },
+          "model": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"gemini-2.5-flash\""
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"root\""
+            }
+          },
+          "tools": {
+            "value": {
+              "kind": "list",
+              "text": "[FunctionTool(get_weather), BashTool()]",
+              "list": [
+                {
+                  "kind": "call",
+                  "text": "FunctionTool(get_weather)"
+                },
+                {
+                  "kind": "call",
+                  "text": "BashTool()"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tool_refs": [
+        {
+          "name": "get_weather",
+          "external": false
+        }
+      ],
+      "hosted_tool_refs": [
+        {
+          "class": "BashTool"
+        }
+      ],
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    }
+  ],
+  "hosted_tools": [
+    {
+      "class": "BashTool",
+      "sdk": "google_adk",
+      "file_path": "main.py",
+      "start_line": 18,
+      "end_line": 18
+    }
+  ],
+  "mcp_servers": null,
+  "subagents": null,
+  "skills": null,
+  "dependencies": [
+    {
+      "name": "google-adk",
+      "version": "\u003e=0.1.0",
+      "ecosystem": "pypi",
+      "source": "pyproject.toml",
+      "start_line": 6,
+      "end_line": 6
+    }
+  ],
+  "slash_commands": null,
+  "plugin_manifests": null,
+  "claude_settings": null,
+  "findings": [
+    {
+      "rule_id": "ADK-001",
+      "category": "google_adk",
+      "scope": "tool",
+      "severity": "low",
+      "tool_name": "get_weather",
+      "file_path": "main.py",
+      "start_line": 9,
+      "end_line": 10,
+      "title": "FunctionTool-wrapped function has no docstring",
+      "explanation": "Google ADK FunctionTool wraps a user-written function and exposes it to the model. ADK uses the function's docstring as the tool description that the model sees when deciding whether to call it. A tool with no docstring is a tool the model cannot reason about — it will under-call it or call it with the wrong arguments. This is the single highest-leverage authoring fix for ADK tools.\n",
+      "suggested_fix": "Add a one-paragraph docstring describing what the tool does, what inputs it expects, and what it returns. The model reads this string verbatim.\n",
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "ADK-002",
+      "category": "google_adk",
+      "scope": "tool",
+      "severity": "medium",
+      "tool_name": "get_weather",
+      "file_path": "main.py",
+      "start_line": 9,
+      "end_line": 10,
+      "title": "FunctionTool-wrapped function has no type-annotated parameters",
+      "explanation": "Google ADK derives the JSON schema for a FunctionTool's parameters from the wrapped function's type annotations. A function with untyped parameters produces an underspecified schema — the model receives no type guidance and will pass arguments of the wrong type, which the SDK then rejects at validation time.\n",
+      "suggested_fix": "Annotate every parameter with a concrete type (str, int, bool, list[str], Pydantic model, etc.). ADK propagates these into the schema the model sees.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "ADK-008",
+      "category": "google_adk",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "root",
+      "file_path": "main.py",
+      "start_line": 13,
+      "end_line": 20,
+      "title": "Agent grants BashTool with no restrictive command policy",
+      "explanation": "This LlmAgent grants BashTool with no explicit policy=. BashTool runs shell commands chosen by the model, and its BashToolPolicy defaults to allowed_command_prefixes=(\"*\",) (every command) and blocked_operators=() (no shell metacharacters blocked) — i.e. fully injectable. Without a restrictive policy, model-supplied input reaches the shell with no command allow-list and no operator filtering. (Earlier google-adk exposed a block_shell_metacharacters kwarg; current ADK gates this through BashToolPolicy instead.)\n",
+      "suggested_fix": "Construct BashTool with a restrictive policy=BashToolPolicy(...): set allowed_command_prefixes to the specific commands the agent needs and blocked_operators to deny shell metacharacters. Pair with a before_tool_callback that validates the command before execution.\n",
+      "confidence": 0.75
+    },
+    {
+      "rule_id": "ADK-101",
+      "category": "google_adk",
+      "scope": "agent",
+      "severity": "medium",
+      "tool_name": "root",
+      "file_path": "main.py",
+      "start_line": 13,
+      "end_line": 20,
+      "title": "LlmAgent has no description",
+      "explanation": "Google ADK routes delegation between agents using the `description=` field on each LlmAgent. When a parent agent decides whether to delegate to a child in its `sub_agents` tree, the model sees only the child's description. An agent with no description becomes effectively unreachable through delegation — it sits in the tree but the parent's model has no signal to pick it. This usually shows up as a silent routing bug.\n",
+      "suggested_fix": "Add a `description=` kwarg that names this agent's role and the kind of input it expects. One sentence is usually enough. Treat it as documentation for the parent agent's model.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "ADK-102",
+      "category": "google_adk",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "root",
+      "file_path": "main.py",
+      "start_line": 13,
+      "end_line": 20,
+      "title": "Agent with BashTool has no before_tool_callback",
+      "explanation": "An LlmAgent with `BashTool` in its tools= list can execute arbitrary shell commands chosen by the model. ADK's `before_tool_callback` is the only synchronous interception point where you can inspect a tool call before it executes and short-circuit it — the moral analog of an OpenAI agent's `input_guardrails`. An agent with BashTool and no `before_tool_callback` has no opportunity to deny a shell command the model invents.\n",
+      "suggested_fix": "Add a `before_tool_callback=` that inspects the tool name and arguments, allow-lists known-safe commands (or denies known-bad ones), and returns a refusal `Content` when the call should be blocked. Returning anything non-None from the callback skips the tool execution.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "ADK-104",
+      "category": "google_adk",
+      "scope": "agent",
+      "severity": "medium",
+      "tool_name": "root",
+      "file_path": "main.py",
+      "start_line": 13,
+      "end_line": 20,
+      "title": "Agent has no safety_settings",
+      "explanation": "Google ADK agents use Gemini models whose configurable content filters default to OFF when safety_settings is not provided. safety_settings is not a top-level LlmAgent argument — it is set inside the agent's generate_content_config (a google-genai GenerateContentConfig). Harm categories including DANGEROUS_CONTENT, HATE_SPEECH, HARASSMENT, and SEXUALLY_EXPLICIT are not actively filtered when it is absent. In an agentic loop where model outputs drive subsequent tool calls, an unfiltered harmful output can propagate into real side effects.\n",
+      "suggested_fix": "Pass safety_settings within the generate_content_config= given to the LlmAgent constructor, e.g. generate_content_config=types.GenerateContentConfig( safety_settings=[...]), with explicit HarmBlockThreshold values for each HarmCategory your use case requires. At minimum set DANGEROUS_CONTENT to BLOCK_LOW_AND_ABOVE for agents that touch external data or execute tools with side effects.\n",
+      "confidence": 0.75
+    },
+    {
+      "rule_id": "ADK-201",
+      "category": "google_adk",
+      "scope": "repo",
+      "severity": "low",
+      "tool_name": "",
+      "file_path": "",
+      "start_line": 0,
+      "end_line": 0,
+      "title": "Google ADK project ships no agent-guidance doc (AGENTS.md/CLAUDE.md)",
+      "explanation": "The project uses the Google ADK in code but ships no agent-guidance doc (AGENTS.md or CLAUDE.md) at the repo root. AGENTS.md is the cross-vendor convention an editing coding agent reads before it acts; with neither file present, any agent that opens this repo has no project-specific guidance on agent-class choices (LlmAgent vs SequentialAgent vs ParallelAgent vs LoopAgent), sub_agents composition, FunctionTool wrapping conventions, required guardrails, or the local test and build commands. The likely consequence is generated code that violates the project's tool and agent contracts because nothing in-tree teaches the agent the local rules.\n",
+      "suggested_fix": "Add an AGENTS.md at the repo root (the cross-vendor standard; a CLAUDE.md also satisfies this rule). State which ADK agent classes the project uses and why, how tools must be wrapped, any required guardrails or sandboxing, and the exact test, lint, and build commands. Keep it short and concrete so an editing agent can act on it without re-deriving the conventions.\n",
+      "confidence": 0.9
+    }
+  ],
+  "surfaces": [
+    {
+      "kind": "agent",
+      "name": "root",
+      "file_path": "main.py",
+      "score": 0.41333333333333344,
+      "finding_count": 4,
+      "weighted_severity": 1.7599999999999998
+    },
+    {
+      "kind": "tool",
+      "name": "get_weather",
+      "file_path": "main.py",
+      "score": 0.8466666666666667,
+      "finding_count": 2,
+      "weighted_severity": 0.46
+    },
+    {
+      "kind": "repo",
+      "name": "",
+      "file_path": "",
+      "score": 0.955,
+      "finding_count": 1,
+      "weighted_severity": 0.135
+    }
+  ],
+  "overall_score": 0.646285403050109,
+  "projected_scores": {
+    "fix_critical": 0.646285403050109,
+    "fix_high": 0.852465564738292,
+    "fix_medium": 0.9705453149001536,
+    "fix_low": 1,
+    "fix_all": 1
+  },
+  "rules_source": "https://github.com/trustabl/trustabl-rules",
+  "rules_version": "d77749c5299d470297ee1040a6c8167a759f7004",
+  "rules_from_cache": true,
+  "rules_schema_version": 12,
+  "rules_origin": {
+    "signed": false
+  },
+  "coverage": {
+    "files_parsed": 1,
+    "files_skipped": 0
+  }
+}

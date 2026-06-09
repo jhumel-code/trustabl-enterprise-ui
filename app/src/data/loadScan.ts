@@ -6,21 +6,20 @@ import type {
   InventoryEntity,
   InventoryKind,
   InventoryTag,
-  Repo,
   Scan,
   Scope,
   Severity,
   Skill,
   Surface,
 } from '@/types'
-import raw from './scan.json'
 
-// Adapter: real engine ScanResult JSON (snake_case) → the camelCase view-model.
-// Regenerate src/data/scan.json with:
-//   trustabl scan <target> --no-rules-update --format json > app/src/data/scan.json
+// Multi-scan adapter: every real engine ScanResult JSON under ./scans/*.json
+// (snake_case) → the camelCase view-model. Each file is one scanned repo.
+// Regenerate with, for each repo:
+//   trustabl scan <target> --no-rules-update --format json > app/src/data/scans/<repo>.json
 //
-// The engine domain is read-only; the platform overlay (Finding.status, Gate) is
-// synthesized here because no control-plane backend is wired yet.
+// The engine domain is read-only; the platform overlay (Finding.status, Gate)
+// is synthesized here because no control-plane backend is wired yet.
 
 interface RawFinding {
   rule_id: string
@@ -60,8 +59,8 @@ interface RawScan {
   rules_skipped?: string[]
   rules_origin: { signed: boolean; channel?: string; custom?: boolean }
   coverage: { files_parsed: number; files_skipped: number; skipped_files?: string[] }
-  findings: RawFinding[]
-  surfaces: RawSurface[]
+  findings?: RawFinding[]
+  surfaces?: RawSurface[]
   tools?: RawEntity[]
   agents?: RawEntity[]
   subagents?: RawEntity[]
@@ -112,118 +111,20 @@ interface RawDep {
   end_line: number
 }
 
-const data = raw as unknown as RawScan
-
 function basename(p: string): string {
   const parts = p.replace(/\/+$/, '').split('/')
   return parts[parts.length - 1] || p
 }
 
-export const scan: Scan = {
-  id: data.scan_id,
-  repo: basename(data.repo),
-  overallScore: data.overall_score,
-  projectedScores: {
-    fixCritical: data.projected_scores.fix_critical,
-    fixHigh: data.projected_scores.fix_high,
-    fixMedium: data.projected_scores.fix_medium,
-    fixLow: data.projected_scores.fix_low,
-    fixAll: data.projected_scores.fix_all,
-  },
-  languages: data.languages ?? [],
-  sdks: data.sdks ?? [],
-  rulesSource: data.rules_source,
-  rulesVersion: data.rules_version,
-  rulesFromCache: data.rules_from_cache,
-  rulesStale: data.rules_stale,
-  rulesSchemaVersion: data.rules_schema_version,
-  rulesSchemaNewer: data.rules_schema_newer,
-  rulesSkipped: data.rules_skipped,
-  rulesOrigin: data.rules_origin,
-  coverage: {
-    filesParsed: data.coverage.files_parsed,
-    filesSkipped: data.coverage.files_skipped,
-    skippedFiles: data.coverage.skipped_files,
-  },
-}
-
-export const findings: Finding[] = data.findings.map((f) => ({
-  ruleId: f.rule_id,
-  category: f.category,
-  scope: f.scope as Scope,
-  severity: f.severity as Severity,
-  confidence: f.confidence,
-  toolName: f.tool_name,
-  filePath: f.file_path,
-  startLine: f.start_line,
-  endLine: f.end_line,
-  title: f.title,
-  explanation: f.explanation,
-  suggestedFix: f.suggested_fix,
-  status: 'open' as FindingStatus, // platform overlay — fresh scan has no waivers
-}))
-
-export const surfaces: Surface[] = data.surfaces.map((s) => ({
-  kind: s.kind as Scope,
-  name: s.name,
-  filePath: s.file_path,
-  score: s.score,
-  findingCount: s.finding_count,
-  weightedSeverity: s.weighted_severity,
-}))
-
-export const repo: Repo = {
-  id: basename(data.repo),
-  name: basename(data.repo),
-  latestScanId: data.scan_id,
-}
-
-export const inventory: Array<{ label: string; n: number }> = [
-  { label: 'Tools', n: data.tools?.length ?? 0 },
-  { label: 'Agents', n: data.agents?.length ?? 0 },
-  { label: 'Subagents', n: data.subagents?.length ?? 0 },
-  { label: 'Skills', n: data.skills?.length ?? 0 },
-  { label: 'MCP servers', n: data.mcp_servers?.length ?? 0 },
-  { label: 'Slash commands', n: data.slash_commands?.length ?? 0 },
-]
-
-export const skills: Skill[] = (data.skills ?? []).map((s) => ({
-  name: s.name,
-  description: s.description ?? '',
-  allowedTools: s.allowed_tools ?? [],
-  externalURLs: s.external_urls ?? [],
-  bundledFiles: (s.bundled_files ?? []).map((b) => ({
-    path: b.path,
-    kind: b.kind,
-    hasNetworkEgress: b.has_network_egress,
-    readsSecrets: b.reads_secrets,
-    hasHardcodedSecret: b.has_hardcoded_secret,
-  })),
-  filePath: s.file_path,
-  startLine: s.start_line,
-  endLine: s.end_line,
-}))
-
-export const dependencies: Dependency[] = (data.dependencies ?? []).map((dp) => ({
-  name: dp.name,
-  version: dp.version ?? '',
-  ecosystem: dp.ecosystem,
-  source: dp.source,
-  startLine: dp.start_line,
-  endLine: dp.end_line,
-}))
-
 // Built-in tools that meaningfully widen an agent/subagent's blast radius.
 const RISKY_TOOLS = new Set(['Bash', 'Write', 'Edit', 'WebFetch'])
 const truthy = (v: unknown) => v === true || v === 'true'
 
-/** Tool/agent grant chips: a count plus a risk chip per dangerous built-in. */
 function grantTags(toolNames: string[]): InventoryTag[] {
   const tags: InventoryTag[] = [{ label: `${toolNames.length} tool${toolNames.length === 1 ? '' : 's'}` }]
   for (const n of toolNames) if (RISKY_TOOLS.has(n)) tags.push({ label: n, risk: true })
   return tags
 }
-
 function toolTags(e: RawEntity): InventoryTag[] {
   const tags: InventoryTag[] = []
   const f = e.facts ?? {}
@@ -233,7 +134,6 @@ function toolTags(e: RawEntity): InventoryTag[] {
   tags.push(e.has_typed_params ? { label: 'typed params' } : { label: 'untyped params', risk: true })
   return tags
 }
-
 function skillTags(s: RawSkill): InventoryTag[] {
   const tags: InventoryTag[] = []
   if (s.allowed_tools?.length) tags.push({ label: `${s.allowed_tools.length} tools` })
@@ -242,18 +142,10 @@ function skillTags(s: RawSkill): InventoryTag[] {
     tags.push({ label: `${s.external_urls.length} external URL${s.external_urls.length === 1 ? '' : 's'}`, risk: true })
   return tags
 }
-
-interface NamedEntity {
-  name?: string
-  class?: string
-  file_path?: string
-  start_line?: number
-  end_line?: number
-}
-
 function ent(
   kind: InventoryKind,
-  e: NamedEntity,
+  e: RawEntity,
+  repoId: string,
   opts: { meta?: string; tags?: InventoryTag[]; detail?: string } = {},
 ): InventoryEntity {
   return {
@@ -265,34 +157,190 @@ function ent(
     meta: opts.meta,
     tags: opts.tags,
     detail: opts.detail,
+    repoId,
   }
-}
-
-export const inventoryEntities: InventoryEntity[] = [
-  ...(data.tools ?? []).map((e) => ent('tool', e, { meta: e.language, tags: toolTags(e), detail: e.description })),
-  ...(data.agents ?? []).map((e) =>
-    ent('agent', e, { meta: e.sdk, tags: grantTags((e.tool_refs ?? []).map((r) => r.name)) }),
-  ),
-  ...(data.subagents ?? []).map((e) =>
-    ent('subagent', e, { tags: grantTags(e.tools ?? []), detail: e.description }),
-  ),
-  ...(data.skills ?? []).map((e) => ent('skill', e, { tags: skillTags(e), detail: e.description })),
-  ...(data.mcp_servers ?? []).map((e) =>
-    ent('mcp', e, { meta: e.sdk, tags: e.transport ? [{ label: `${e.transport} transport` }] : [] }),
-  ),
-]
-
-/** Findings whose surface identity matches a given entity (by file + name). */
-export function findingsForEntity(name: string, filePath: string): Finding[] {
-  return findings.filter((f) => f.toolName === name && f.filePath === filePath)
 }
 
 // Gate is platform-derived from the engine's exit-code threshold (a finding of
 // medium-or-higher fails; info/META never do), tripped by the worst such finding.
 const SEV_RANK: Record<string, number> = { critical: 5, high: 4, medium: 3, low: 2, info: 1, '': 0 }
-export const gate: Gate = (() => {
+function gateFor(findings: Finding[]): Gate {
   const blocking = findings.filter((f) => SEV_RANK[f.severity] >= 3)
   if (blocking.length === 0) return { status: 'pass' }
   const worst = [...blocking].sort((a, b) => SEV_RANK[b.severity] - SEV_RANK[a.severity])[0]
   return { status: 'fail', trippedBy: `${worst.ruleId} (${worst.severity})` }
+}
+
+/** One scanned repo, fully adapted to the view-model. */
+export interface RepoScan {
+  repoId: string
+  scan: Scan
+  gate: Gate
+  findings: Finding[]
+  surfaces: Surface[]
+  skills: Skill[]
+  dependencies: Dependency[]
+  inventory: Array<{ label: string; n: number }>
+  inventoryEntities: InventoryEntity[]
+}
+
+function adaptScan(raw: RawScan): RepoScan {
+  const repoId = basename(raw.repo)
+  const scan: Scan = {
+    id: raw.scan_id,
+    repo: repoId,
+    overallScore: raw.overall_score,
+    projectedScores: {
+      fixCritical: raw.projected_scores.fix_critical,
+      fixHigh: raw.projected_scores.fix_high,
+      fixMedium: raw.projected_scores.fix_medium,
+      fixLow: raw.projected_scores.fix_low,
+      fixAll: raw.projected_scores.fix_all,
+    },
+    languages: raw.languages ?? [],
+    sdks: raw.sdks ?? [],
+    rulesSource: raw.rules_source,
+    rulesVersion: raw.rules_version,
+    rulesFromCache: raw.rules_from_cache,
+    rulesStale: raw.rules_stale,
+    rulesSchemaVersion: raw.rules_schema_version,
+    rulesSchemaNewer: raw.rules_schema_newer,
+    rulesSkipped: raw.rules_skipped,
+    rulesOrigin: raw.rules_origin,
+    coverage: {
+      filesParsed: raw.coverage.files_parsed,
+      filesSkipped: raw.coverage.files_skipped,
+      skippedFiles: raw.coverage.skipped_files,
+    },
+  }
+
+  const findings: Finding[] = (raw.findings ?? []).map((f) => ({
+    ruleId: f.rule_id,
+    category: f.category,
+    scope: f.scope as Scope,
+    severity: f.severity as Severity,
+    confidence: f.confidence,
+    toolName: f.tool_name,
+    filePath: f.file_path,
+    startLine: f.start_line,
+    endLine: f.end_line,
+    title: f.title,
+    explanation: f.explanation,
+    suggestedFix: f.suggested_fix,
+    repoId,
+    status: 'open' as FindingStatus,
+  }))
+
+  const surfaces: Surface[] = (raw.surfaces ?? []).map((s) => ({
+    kind: s.kind as Scope,
+    name: s.name,
+    filePath: s.file_path,
+    score: s.score,
+    findingCount: s.finding_count,
+    weightedSeverity: s.weighted_severity,
+    repoId,
+  }))
+
+  const skills: Skill[] = (raw.skills ?? []).map((s) => ({
+    name: s.name,
+    description: s.description ?? '',
+    allowedTools: s.allowed_tools ?? [],
+    externalURLs: s.external_urls ?? [],
+    bundledFiles: (s.bundled_files ?? []).map((b) => ({
+      path: b.path,
+      kind: b.kind,
+      hasNetworkEgress: b.has_network_egress,
+      readsSecrets: b.reads_secrets,
+      hasHardcodedSecret: b.has_hardcoded_secret,
+    })),
+    filePath: s.file_path,
+    startLine: s.start_line,
+    endLine: s.end_line,
+    repoId,
+  }))
+
+  const dependencies: Dependency[] = (raw.dependencies ?? []).map((dp) => ({
+    name: dp.name,
+    version: dp.version ?? '',
+    ecosystem: dp.ecosystem,
+    source: dp.source,
+    startLine: dp.start_line,
+    endLine: dp.end_line,
+  }))
+
+  const inventory = [
+    { label: 'Tools', n: raw.tools?.length ?? 0 },
+    { label: 'Agents', n: raw.agents?.length ?? 0 },
+    { label: 'Subagents', n: raw.subagents?.length ?? 0 },
+    { label: 'Skills', n: raw.skills?.length ?? 0 },
+    { label: 'MCP servers', n: raw.mcp_servers?.length ?? 0 },
+    { label: 'Slash commands', n: raw.slash_commands?.length ?? 0 },
+  ]
+
+  const inventoryEntities: InventoryEntity[] = [
+    ...(raw.tools ?? []).map((e) => ent('tool', e, repoId, { meta: e.language, tags: toolTags(e), detail: e.description })),
+    ...(raw.agents ?? []).map((e) => ent('agent', e, repoId, { meta: e.sdk, tags: grantTags((e.tool_refs ?? []).map((r) => r.name)) })),
+    ...(raw.subagents ?? []).map((e) => ent('subagent', e, repoId, { tags: grantTags(e.tools ?? []), detail: e.description })),
+    ...(raw.skills ?? []).map((e) => ent('skill', e, repoId, { tags: skillTags(e), detail: e.description })),
+    ...(raw.mcp_servers ?? []).map((e) => ent('mcp', e, repoId, { meta: e.sdk, tags: e.transport ? [{ label: `${e.transport} transport` }] : [] })),
+  ]
+
+  return { repoId, scan, gate: gateFor(findings), findings, surfaces, skills, dependencies, inventory, inventoryEntities }
+}
+
+// ── Registry ────────────────────────────────────────────────────
+// Eagerly import every scan JSON; key by repo id, sorted deterministically.
+const modules = import.meta.glob('./scans/*.json', { eager: true }) as Record<string, { default: RawScan }>
+
+export const repoScans: RepoScan[] = Object.values(modules)
+  .map((m) => adaptScan(m.default))
+  .sort((a, b) => a.repoId.localeCompare(b.repoId))
+
+const scansById: Record<string, RepoScan> = Object.fromEntries(repoScans.map((rs) => [rs.repoId, rs]))
+
+/** Look up a single repo's scan bundle (per-repo detail pages). */
+export function getScan(repoId: string | undefined): RepoScan | undefined {
+  return repoId ? scansById[repoId] : undefined
+}
+
+// ── Aggregated fleet views (union across all scanned repos) ──────
+export const findings: Finding[] = repoScans.flatMap((rs) => rs.findings)
+export const surfaces: Surface[] = repoScans.flatMap((rs) => rs.surfaces)
+export const skills: Skill[] = repoScans.flatMap((rs) => rs.skills)
+export const inventoryEntities: InventoryEntity[] = repoScans.flatMap((rs) => rs.inventoryEntities)
+
+/** Repo-wide dependency BOM, deduped across repos. */
+export const dependencies: Dependency[] = (() => {
+  const seen = new Map<string, Dependency>()
+  for (const rs of repoScans)
+    for (const d of rs.dependencies) {
+      const key = `${d.ecosystem}:${d.name}@${d.version}`
+      if (!seen.has(key)) seen.set(key, d)
+    }
+  return [...seen.values()]
 })()
+
+/** Inventory counts summed across the fleet. */
+export const inventory: Array<{ label: string; n: number }> = [
+  'Tools',
+  'Agents',
+  'Subagents',
+  'Skills',
+  'MCP servers',
+  'Slash commands',
+].map((label) => ({
+  label,
+  n: repoScans.reduce((sum, rs) => sum + (rs.inventory.find((i) => i.label === label)?.n ?? 0), 0),
+}))
+
+/** A representative scan for fleet-wide rules provenance (the rules pack is
+ *  identical across repos in one run). */
+export const scan: Scan = repoScans[0].scan
+
+/** Findings attributed to a given surface entity (by name + file, scoped to its
+ *  repo when known). */
+export function findingsForEntity(name: string, filePath: string, repoId?: string): Finding[] {
+  return findings.filter(
+    (f) => f.toolName === name && f.filePath === filePath && (!repoId || f.repoId === repoId),
+  )
+}

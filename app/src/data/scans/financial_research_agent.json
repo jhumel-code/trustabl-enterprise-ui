@@ -1,0 +1,450 @@
+{
+  "scan_id": "scan_5f91084f6e200281",
+  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/financial_research_agent",
+  "languages": [
+    "python"
+  ],
+  "sdks": [
+    "openai_agents"
+  ],
+  "has_shell_invocations": false,
+  "manifest": {
+    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/financial_research_agent",
+    "is_remote": false,
+    "python_files": [
+      "__init__.py",
+      "agents/__init__.py",
+      "agents/financials_agent.py",
+      "agents/planner_agent.py",
+      "agents/risk_agent.py",
+      "agents/search_agent.py",
+      "agents/verifier_agent.py",
+      "agents/writer_agent.py",
+      "main.py",
+      "manager.py",
+      "printer.py"
+    ],
+    "yaml_files": [],
+    "markdown_files": [
+      "README.md"
+    ],
+    "has_claude_sdk_dependency": false,
+    "has_openshell_artifact": false
+  },
+  "tools": null,
+  "agents": [
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "agents/financials_agent.py",
+      "start_line": 19,
+      "end_line": 23,
+      "name": "FundamentalsAnalystAgent",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "name_ref",
+              "text": "FINANCIALS_PROMPT"
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"FundamentalsAnalystAgent\""
+            }
+          },
+          "output_type": {
+            "value": {
+              "kind": "name_ref",
+              "text": "AnalysisSummary"
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "agents/planner_agent.py",
+      "start_line": 30,
+      "end_line": 35,
+      "name": "FinancialPlannerAgent",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "name_ref",
+              "text": "PROMPT"
+            }
+          },
+          "model": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"o3-mini\""
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"FinancialPlannerAgent\""
+            }
+          },
+          "output_type": {
+            "value": {
+              "kind": "name_ref",
+              "text": "FinancialSearchPlan"
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "agents/risk_agent.py",
+      "start_line": 18,
+      "end_line": 22,
+      "name": "RiskAnalystAgent",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "name_ref",
+              "text": "RISK_PROMPT"
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"RiskAnalystAgent\""
+            }
+          },
+          "output_type": {
+            "value": {
+              "kind": "name_ref",
+              "text": "AnalysisSummary"
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "agents/search_agent.py",
+      "start_line": 12,
+      "end_line": 17,
+      "name": "FinancialSearchAgent",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "name_ref",
+              "text": "INSTRUCTIONS"
+            }
+          },
+          "model": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"gpt-5.5\""
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"FinancialSearchAgent\""
+            }
+          },
+          "tools": {
+            "value": {
+              "kind": "list",
+              "text": "[WebSearchTool()]",
+              "list": [
+                {
+                  "kind": "call",
+                  "text": "WebSearchTool()"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": [
+        {
+          "class": "WebSearchTool"
+        }
+      ],
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "agents/verifier_agent.py",
+      "start_line": 24,
+      "end_line": 29,
+      "name": "VerificationAgent",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "name_ref",
+              "text": "VERIFIER_PROMPT"
+            }
+          },
+          "model": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"gpt-5.5\""
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"VerificationAgent\""
+            }
+          },
+          "output_type": {
+            "value": {
+              "kind": "name_ref",
+              "text": "VerificationResult"
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "openai_agents",
+      "class": "Agent",
+      "language": "python",
+      "file_path": "agents/writer_agent.py",
+      "start_line": 29,
+      "end_line": 34,
+      "name": "FinancialWriterAgent",
+      "kwargs": {
+        "children": {
+          "instructions": {
+            "value": {
+              "kind": "name_ref",
+              "text": "WRITER_PROMPT"
+            }
+          },
+          "model": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"gpt-5.5\""
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"FinancialWriterAgent\""
+            }
+          },
+          "output_type": {
+            "value": {
+              "kind": "name_ref",
+              "text": "FinancialReportData"
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    }
+  ],
+  "hosted_tools": [
+    {
+      "class": "WebSearchTool",
+      "sdk": "openai_agents",
+      "file_path": "agents/search_agent.py",
+      "start_line": 16,
+      "end_line": 16
+    }
+  ],
+  "mcp_servers": null,
+  "subagents": null,
+  "skills": null,
+  "dependencies": null,
+  "slash_commands": null,
+  "plugin_manifests": null,
+  "claude_settings": null,
+  "findings": [
+    {
+      "rule_id": "OAI-109",
+      "category": "openai_sdk",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "FinancialSearchAgent",
+      "file_path": "agents/search_agent.py",
+      "start_line": 12,
+      "end_line": 17,
+      "title": "Agent uses WebSearchTool without input_guardrails",
+      "explanation": "This agent is wired with WebSearchTool, which fetches content from the public internet, but has no input_guardrails configured. Web search results are untrusted external data that can contain prompt injection payloads. An attacker can craft malicious content on a page they control; when the agent searches and retrieves that content, the injected instructions can hijack the agent's behavior — exfiltrating data, calling other tools, or manipulating outputs.\n",
+      "suggested_fix": "Add at least one @input_guardrail that validates user queries before they reach WebSearchTool. The guardrail should reject queries that could lead to attacker-controlled content (e.g. queries containing raw URLs or suspicious redirection patterns). Wire it via input_guardrails=[...] on the Agent(...) constructor.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "OAI-110",
+      "category": "openai_sdk",
+      "scope": "agent",
+      "severity": "medium",
+      "tool_name": "FinancialSearchAgent",
+      "file_path": "agents/search_agent.py",
+      "start_line": 12,
+      "end_line": 17,
+      "title": "Agent wires a content-fetching tool without output_guardrails",
+      "explanation": "This agent pulls in untrusted external content (web search, file search, or a code interpreter) but has no output_guardrails. Input guardrails (OAI-101/106/109) screen what reaches the model; output guardrails are the SDK's mechanism to screen the final response before it reaches the user. Without them, a prompt-injected tool result can drive an exfiltrating or unsafe final answer with nothing inspecting the egress. The check is scoped to agents that actually wire a content-fetching hosted tool, since a plain agent legitimately needs no output guardrail.\n",
+      "suggested_fix": "Add at least one output guardrail (a function decorated @output_guardrail or an OutputGuardrail instance) and wire it via output_guardrails=[...] on the Agent(...) constructor. It should inspect the final output for data exfiltration and unsafe content before it is returned.\n",
+      "confidence": 0.6
+    },
+    {
+      "rule_id": "OAI-201",
+      "category": "openai_sdk",
+      "scope": "repo",
+      "severity": "medium",
+      "tool_name": "",
+      "file_path": "",
+      "start_line": 0,
+      "end_line": 0,
+      "title": "Project uses default OpenAI tracing",
+      "explanation": "The project uses the OpenAI Agents SDK with default tracing enabled. By default, inputs, tool calls, tool outputs, and agent responses are sent to OpenAI's hosted tracing backend. For projects handling sensitive data (PII, credentials, internal documents), this is a data egress channel that is easy to miss.\n",
+      "suggested_fix": "Either disable tracing entirely (set OPENAI_AGENTS_DISABLE_TRACING=1 in the environment) OR register a custom trace processor via agents.tracing.add_trace_processor(...) that redacts sensitive fields before they leave the process.\n",
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "OAI-202",
+      "category": "openai_sdk",
+      "scope": "repo",
+      "severity": "low",
+      "tool_name": "",
+      "file_path": "",
+      "start_line": 0,
+      "end_line": 0,
+      "title": "OpenAI Agents project ships no agent-guidance doc (AGENTS.md/CLAUDE.md)",
+      "explanation": "The project uses the OpenAI Agents SDK in code but ships no agent-guidance doc (AGENTS.md or CLAUDE.md) at the repo root. AGENTS.md is the cross-vendor convention an editing coding agent reads before it acts; with neither file present, any agent that opens this repo has no project-specific guidance on Agent vs SandboxAgent choice, handoff topology, required input/output guardrails, tool_choice settings, or the local test and build commands. The likely consequence is generated code that bypasses the project's safety contracts because nothing in-tree teaches the agent the local rules.\n",
+      "suggested_fix": "Add an AGENTS.md at the repo root (the cross-vendor standard; a CLAUDE.md also satisfies this rule). State whether the project uses Agent or SandboxAgent, list required guardrails (input_guardrails, output_guardrails) and tool_choice conventions, note any handoff or tracing policy, and give the exact test, lint, and build commands. Keep it short and concrete so an editing agent can act on it without re-deriving the conventions.\n",
+      "confidence": 0.9
+    }
+  ],
+  "surfaces": [
+    {
+      "kind": "agent",
+      "name": "FinancialSearchAgent",
+      "file_path": "agents/search_agent.py",
+      "score": 0.7216666666666667,
+      "finding_count": 2,
+      "weighted_severity": 0.835
+    },
+    {
+      "kind": "repo",
+      "name": "",
+      "file_path": "",
+      "score": 0.8483333333333333,
+      "finding_count": 2,
+      "weighted_severity": 0.45500000000000007
+    },
+    {
+      "kind": "agent",
+      "name": "FinancialPlannerAgent",
+      "file_path": "agents/planner_agent.py",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "agent",
+      "name": "FinancialWriterAgent",
+      "file_path": "agents/writer_agent.py",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "agent",
+      "name": "FundamentalsAnalystAgent",
+      "file_path": "agents/financials_agent.py",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "agent",
+      "name": "RiskAnalystAgent",
+      "file_path": "agents/risk_agent.py",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "agent",
+      "name": "VerificationAgent",
+      "file_path": "agents/verifier_agent.py",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    }
+  ],
+  "overall_score": 0.9117712102935264,
+  "projected_scores": {
+    "fix_critical": 0.9117712102935264,
+    "fix_high": 0.9584307992202729,
+    "fix_medium": 0.9928416257883673,
+    "fix_low": 1,
+    "fix_all": 1
+  },
+  "rules_source": "https://github.com/trustabl/trustabl-rules",
+  "rules_version": "d77749c5299d470297ee1040a6c8167a759f7004",
+  "rules_from_cache": true,
+  "rules_schema_version": 12,
+  "rules_origin": {
+    "signed": false
+  },
+  "coverage": {
+    "files_parsed": 11,
+    "files_skipped": 0
+  }
+}

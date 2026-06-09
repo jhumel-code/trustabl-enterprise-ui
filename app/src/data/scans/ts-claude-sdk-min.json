@@ -1,0 +1,452 @@
+{
+  "scan_id": "scan_7f9d021ba367bcd5",
+  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/ts-claude-sdk-min",
+  "languages": [
+    "typescript"
+  ],
+  "sdks": [
+    "claude_agent_sdk"
+  ],
+  "has_shell_invocations": false,
+  "manifest": {
+    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/ts-claude-sdk-min",
+    "is_remote": false,
+    "python_files": [],
+    "typescript_files": [
+      "src/agent.ts"
+    ],
+    "yaml_files": [],
+    "json_files": [
+      "package.json"
+    ],
+    "markdown_files": [
+      "README.md"
+    ],
+    "has_claude_sdk_dependency": false,
+    "has_openshell_artifact": false,
+    "components": [
+      {
+        "kind": "dependency_manifest",
+        "path": "package.json",
+        "language": "typescript"
+      }
+    ]
+  },
+  "tools": [
+    {
+      "name": "search",
+      "kind": "claude_sdk_tool",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 4,
+      "end_line": 10,
+      "description": "Search the web",
+      "has_typed_params": true,
+      "param_names": [
+        "query"
+      ],
+      "config": {
+        "annotations.readOnlyHint": "true"
+      }
+    }
+  ],
+  "agents": [
+    {
+      "sdk": "claude_agent_sdk",
+      "class": "AgentDefinition",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 17,
+      "end_line": 21,
+      "name": "reviewer",
+      "kwargs": {
+        "children": {
+          "description": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"Code review specialist\""
+            }
+          },
+          "prompt": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"You are a code reviewer.\""
+            }
+          },
+          "tools": {
+            "value": {
+              "kind": "list",
+              "text": "[\"Read\", \"Grep\"]",
+              "list": [
+                {
+                  "kind": "literal_string",
+                  "text": "\"Read\""
+                },
+                {
+                  "kind": "literal_string",
+                  "text": "\"Grep\""
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tool_refs": [
+        {
+          "name": "Read",
+          "external": true
+        },
+        {
+          "name": "Grep",
+          "external": true
+        }
+      ],
+      "hosted_tool_refs": null,
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "claude_agent_sdk",
+      "class": "QueryMainAgent",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 23,
+      "end_line": 38,
+      "name": "q",
+      "kwargs": {
+        "children": {
+          "options": {
+            "children": {
+              "agents": {
+                "children": {
+                  "analyst": {
+                    "children": {
+                      "description": {
+                        "value": {
+                          "kind": "literal_string",
+                          "text": "\"Data analyst\""
+                        }
+                      },
+                      "prompt": {
+                        "value": {
+                          "kind": "literal_string",
+                          "text": "\"Analyze data.\""
+                        }
+                      },
+                      "tools": {
+                        "value": {
+                          "kind": "list",
+                          "text": "[\"Read\"]",
+                          "list": [
+                            {
+                              "kind": "literal_string",
+                              "text": "\"Read\""
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "mcpServers": {
+                "children": {
+                  "fs": {
+                    "children": {
+                      "args": {
+                        "value": {
+                          "kind": "list",
+                          "text": "[\"./fs.js\"]",
+                          "list": [
+                            {
+                              "kind": "literal_string",
+                              "text": "\"./fs.js\""
+                            }
+                          ]
+                        }
+                      },
+                      "command": {
+                        "value": {
+                          "kind": "literal_string",
+                          "text": "\"node\""
+                        }
+                      },
+                      "type": {
+                        "value": {
+                          "kind": "literal_string",
+                          "text": "\"stdio\""
+                        }
+                      }
+                    }
+                  },
+                  "my-tools": {
+                    "children": {
+                      "instance": {
+                        "value": {
+                          "kind": "unknown",
+                          "text": "myServer.instance"
+                        }
+                      },
+                      "name": {
+                        "value": {
+                          "kind": "literal_string",
+                          "text": "\"my-tools\""
+                        }
+                      },
+                      "type": {
+                        "value": {
+                          "kind": "literal_string",
+                          "text": "\"sdk\""
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "prompt": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"Analyze this code\""
+            }
+          }
+        }
+      },
+      "tool_refs": null,
+      "hosted_tool_refs": null,
+      "mcp_server_refs": [
+        {
+          "class": "McpSdkServerConfigWithInstance",
+          "external": true
+        },
+        {
+          "class": "McpStdioServerConfig",
+          "external": true
+        }
+      ],
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    },
+    {
+      "sdk": "claude_agent_sdk",
+      "class": "AgentDefinition",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 27,
+      "end_line": 31,
+      "name": "analyst",
+      "kwargs": {
+        "children": {
+          "description": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"Data analyst\""
+            }
+          },
+          "prompt": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"Analyze data.\""
+            }
+          },
+          "tools": {
+            "value": {
+              "kind": "list",
+              "text": "[\"Read\"]",
+              "list": [
+                {
+                  "kind": "literal_string",
+                  "text": "\"Read\""
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tool_refs": [
+        {
+          "name": "Read",
+          "external": true
+        }
+      ],
+      "hosted_tool_refs": null,
+      "mcp_server_refs": [
+        {
+          "class": "McpSdkServerConfigWithInstance",
+          "external": true
+        },
+        {
+          "class": "McpStdioServerConfig",
+          "external": true
+        }
+      ],
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    }
+  ],
+  "hosted_tools": null,
+  "mcp_servers": [
+    {
+      "class": "createSdkMcpServer",
+      "transport": "sdk",
+      "sdk": "claude_agent_sdk",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 12,
+      "end_line": 15
+    },
+    {
+      "class": "McpSdkServerConfigWithInstance",
+      "transport": "sdk",
+      "sdk": "claude_agent_sdk",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 34,
+      "end_line": 34,
+      "kwargs": {
+        "children": {
+          "instance": {
+            "value": {
+              "kind": "unknown",
+              "text": "myServer.instance"
+            }
+          },
+          "name": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"my-tools\""
+            }
+          },
+          "type": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"sdk\""
+            }
+          }
+        }
+      }
+    },
+    {
+      "class": "McpStdioServerConfig",
+      "transport": "stdio",
+      "sdk": "claude_agent_sdk",
+      "language": "typescript",
+      "file_path": "src/agent.ts",
+      "start_line": 35,
+      "end_line": 35,
+      "kwargs": {
+        "children": {
+          "args": {
+            "value": {
+              "kind": "list",
+              "text": "[\"./fs.js\"]",
+              "list": [
+                {
+                  "kind": "literal_string",
+                  "text": "\"./fs.js\""
+                }
+              ]
+            }
+          },
+          "command": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"node\""
+            }
+          },
+          "type": {
+            "value": {
+              "kind": "literal_string",
+              "text": "\"stdio\""
+            }
+          }
+        }
+      }
+    }
+  ],
+  "subagents": null,
+  "skills": null,
+  "dependencies": [
+    {
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "version": "^1.0.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "name": "zod",
+      "version": "^3.0.0",
+      "ecosystem": "npm",
+      "source": "package.json",
+      "start_line": 6,
+      "end_line": 6
+    }
+  ],
+  "slash_commands": null,
+  "plugin_manifests": null,
+  "claude_settings": null,
+  "findings": null,
+  "surfaces": [
+    {
+      "kind": "agent",
+      "name": "analyst",
+      "file_path": "src/agent.ts",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "agent",
+      "name": "q",
+      "file_path": "src/agent.ts",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "agent",
+      "name": "reviewer",
+      "file_path": "src/agent.ts",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    },
+    {
+      "kind": "tool",
+      "name": "search",
+      "file_path": "src/agent.ts",
+      "score": 1,
+      "finding_count": 0,
+      "weighted_severity": 0
+    }
+  ],
+  "overall_score": 1,
+  "projected_scores": {
+    "fix_critical": 1,
+    "fix_high": 1,
+    "fix_medium": 1,
+    "fix_low": 1,
+    "fix_all": 1
+  },
+  "rules_source": "https://github.com/trustabl/trustabl-rules",
+  "rules_version": "d77749c5299d470297ee1040a6c8167a759f7004",
+  "rules_from_cache": true,
+  "rules_schema_version": 12,
+  "rules_origin": {
+    "signed": false
+  },
+  "coverage": {
+    "files_parsed": 1,
+    "files_skipped": 0
+  }
+}

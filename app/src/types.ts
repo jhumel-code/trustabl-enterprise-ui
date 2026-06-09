@@ -68,6 +68,7 @@ export interface Finding {
   title: string
   explanation: string
   suggestedFix: string
+  repoId?: string // which scanned repo this finding belongs to (fleet attribution)
   // ── platform overlay (joined at read time) ──
   status: FindingStatus
   waiverId?: string
@@ -82,6 +83,7 @@ export interface Surface {
   score: number // 0..1
   findingCount: number
   weightedSeverity: number
+  repoId?: string
 }
 
 export interface Dependency {
@@ -147,6 +149,7 @@ export interface Skill {
   filePath: string
   startLine: number
   endLine: number
+  repoId?: string
 }
 
 export type InventoryKind = 'tool' | 'agent' | 'subagent' | 'skill' | 'mcp'
@@ -167,6 +170,7 @@ export interface InventoryEntity {
   detail?: string
   meta?: string // sdk / language / transport
   tags?: InventoryTag[]
+  repoId?: string
 }
 
 // ── platform view types used by shared components ───────────────

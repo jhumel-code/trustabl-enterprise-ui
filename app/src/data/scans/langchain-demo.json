@@ -1,0 +1,264 @@
+{
+  "scan_id": "scan_5f5fa50784544b4b",
+  "repo": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/langchain-demo",
+  "languages": [
+    "python"
+  ],
+  "sdks": [
+    "langchain"
+  ],
+  "has_shell_invocations": true,
+  "manifest": {
+    "repo_root": "/Users/ianjhumelbautista/trustabl/.claude/worktrees/priceless-volhard-91ec98/testdata/corpus/langchain-demo",
+    "is_remote": false,
+    "python_files": [
+      "agent.py"
+    ],
+    "yaml_files": [],
+    "has_claude_sdk_dependency": false,
+    "has_openshell_artifact": false
+  },
+  "tools": [
+    {
+      "name": "lookup",
+      "kind": "langchain_tool",
+      "language": "python",
+      "file_path": "agent.py",
+      "start_line": 10,
+      "end_line": 11,
+      "has_typed_params": false,
+      "param_names": [
+        "q"
+      ]
+    },
+    {
+      "name": "run_cmd",
+      "kind": "shell_invocation",
+      "language": "python",
+      "file_path": "agent.py",
+      "start_line": 14,
+      "end_line": 18,
+      "description": "Run a shell command and return its output.",
+      "has_typed_params": true,
+      "param_names": [
+        "cmd"
+      ],
+      "facts": {
+        "shells_out": "true"
+      }
+    },
+    {
+      "name": "run_cmd",
+      "var_name": "shell_tool",
+      "kind": "langchain_tool",
+      "language": "python",
+      "file_path": "agent.py",
+      "start_line": 14,
+      "end_line": 18,
+      "description": "Run a shell command and return its output.",
+      "has_typed_params": true,
+      "param_names": [
+        "cmd"
+      ],
+      "facts": {
+        "shells_out": "true"
+      }
+    }
+  ],
+  "agents": [
+    {
+      "sdk": "langchain",
+      "class": "ReactAgent",
+      "language": "python",
+      "file_path": "agent.py",
+      "start_line": 24,
+      "end_line": 24,
+      "name": "",
+      "kwargs": {
+        "children": {
+          "tools": {
+            "value": {
+              "kind": "list",
+              "text": "[lookup, shell_tool, PythonREPLTool()]",
+              "list": [
+                {
+                  "kind": "name_ref",
+                  "text": "lookup"
+                },
+                {
+                  "kind": "name_ref",
+                  "text": "shell_tool"
+                },
+                {
+                  "kind": "call",
+                  "text": "PythonREPLTool()"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tool_refs": [
+        {
+          "name": "lookup",
+          "external": false
+        },
+        {
+          "name": "shell_tool",
+          "external": false
+        }
+      ],
+      "hosted_tool_refs": [
+        {
+          "class": "PythonREPLTool"
+        }
+      ],
+      "mcp_server_refs": null,
+      "handoff_refs": null,
+      "input_guards": null,
+      "output_guards": null,
+      "opaque": false
+    }
+  ],
+  "hosted_tools": [
+    {
+      "class": "PythonREPLTool",
+      "sdk": "langchain",
+      "file_path": "agent.py",
+      "start_line": 24,
+      "end_line": 24
+    }
+  ],
+  "mcp_servers": null,
+  "subagents": null,
+  "skills": null,
+  "dependencies": null,
+  "slash_commands": null,
+  "plugin_manifests": null,
+  "claude_settings": null,
+  "findings": [
+    {
+      "rule_id": "LC-001",
+      "category": "langchain",
+      "scope": "tool",
+      "severity": "low",
+      "tool_name": "lookup",
+      "file_path": "agent.py",
+      "start_line": 10,
+      "end_line": 11,
+      "title": "LangChain tool has no description",
+      "explanation": "LangChain exposes a tool to the model through its description: for an @tool-decorated function or a StructuredTool, the description defaults to the wrapped function's docstring. A tool with no docstring (and no explicit description=) reaches the model as a bare name, so the model cannot tell what the tool does or when to call it — it will skip the tool or invoke it with the wrong arguments. This is the single highest-leverage authoring fix.\n",
+      "suggested_fix": "Add a one-paragraph docstring to the wrapped function describing what the tool does, the inputs it expects, and what it returns — or pass an explicit description= to StructuredTool/Tool. The model reads this string verbatim.\n",
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "LC-002",
+      "category": "langchain",
+      "scope": "tool",
+      "severity": "medium",
+      "tool_name": "lookup",
+      "file_path": "agent.py",
+      "start_line": 10,
+      "end_line": 11,
+      "title": "LangChain tool parameters are not type-annotated",
+      "explanation": "LangChain builds a tool's argument schema from the wrapped function's type hints (or an explicit args_schema Pydantic model). A tool whose parameters carry no annotations produces an underspecified schema: the model gets no type guidance and passes arguments of the wrong shape, which LangChain then rejects at validation time — a silent reliability tax on every call.\n",
+      "suggested_fix": "Annotate every parameter with a concrete type (str, int, list[str], a Pydantic model, etc.), or pass an args_schema= to StructuredTool. LangChain propagates these into the JSON schema the model sees.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "LC-003",
+      "category": "langchain",
+      "scope": "tool",
+      "severity": "high",
+      "tool_name": "run_cmd",
+      "file_path": "agent.py",
+      "start_line": 14,
+      "end_line": 18,
+      "title": "LangChain tool body spawns a subprocess",
+      "explanation": "This LangChain tool's body invokes a shell primitive (subprocess.*, os.system, os.popen, or os.spawn*). Because the tool is exposed to the model, a prompt-injected or confused model can drive it to run arbitrary commands with the agent process's privileges. Shell execution selected by model output is the most direct path from prompt injection to remote code execution.\n",
+      "suggested_fix": "Do not let model-controlled input reach a shell. Replace shell-outs with a typed library call; if a subprocess is unavoidable, pass an argument list (never shell=True), allow-list the exact commands, and run it in a sandbox with no ambient credentials. Keep shell logic out of any agent-callable tool.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "LC-101",
+      "category": "langchain",
+      "scope": "agent",
+      "severity": "high",
+      "tool_name": "",
+      "file_path": "agent.py",
+      "start_line": 24,
+      "end_line": 24,
+      "title": "LangChain agent wires a code-execution or shell built-in tool",
+      "explanation": "This agent's tools list includes a LangChain built-in that executes code or shell commands chosen by the model: PythonREPLTool / PythonAstREPLTool run arbitrary Python, and ShellTool runs arbitrary shell commands. Once such a tool is wired, a prompt injection or a confused model has a direct path to arbitrary code execution in the agent process — these built-ins were the vector in multiple published LangChain RCE advisories.\n",
+      "suggested_fix": "Remove the REPL/shell built-in from production agents. If you genuinely need code execution, run it in an isolated sandbox (no filesystem, no network, no credentials, hard timeout) and gate it behind a human-in-the-loop approval (a LangGraph interrupt_before breakpoint or a tool-approval middleware) rather than letting the model invoke it unattended.\n",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "LC-201",
+      "category": "langchain",
+      "scope": "repo",
+      "severity": "low",
+      "tool_name": "",
+      "file_path": "",
+      "start_line": 0,
+      "end_line": 0,
+      "title": "LangChain project ships no agent-guidance doc (AGENTS.md/CLAUDE.md)",
+      "explanation": "The project uses LangChain / LangGraph in code but ships no agent-guidance doc (AGENTS.md or CLAUDE.md) at the repo root. AGENTS.md is the cross-vendor convention an editing coding agent reads before it acts; with neither file present, any agent that opens this repo has no project-specific guidance on which agent constructor to use (create_react_agent vs create_agent vs a raw StateGraph), how tools must be defined and guarded, whether the REPL/shell built-ins are permitted, or the local test and build commands. The likely consequence is generated code that violates the project's tool and agent contracts because nothing in-tree teaches the agent the local rules.\n",
+      "suggested_fix": "Add an AGENTS.md at the repo root (a CLAUDE.md also satisfies this rule). State which LangChain agent constructors the project uses and why, how tools must be defined and guarded, any required human-in-the-loop gates, and the exact test, lint, and build commands. Keep it short and concrete so an editing agent can act on it without re-deriving the conventions.\n",
+      "confidence": 0.9
+    }
+  ],
+  "surfaces": [
+    {
+      "kind": "agent",
+      "name": "",
+      "file_path": "agent.py",
+      "score": 0.8016666666666666,
+      "finding_count": 1,
+      "weighted_severity": 0.595
+    },
+    {
+      "kind": "tool",
+      "name": "run_cmd",
+      "file_path": "agent.py",
+      "score": 0.8016666666666666,
+      "finding_count": 1,
+      "weighted_severity": 0.595
+    },
+    {
+      "kind": "tool",
+      "name": "lookup",
+      "file_path": "agent.py",
+      "score": 0.8466666666666667,
+      "finding_count": 2,
+      "weighted_severity": 0.46
+    },
+    {
+      "kind": "repo",
+      "name": "",
+      "file_path": "",
+      "score": 0.955,
+      "finding_count": 1,
+      "weighted_severity": 0.135
+    }
+  ],
+  "overall_score": 0.8431071737251513,
+  "projected_scores": {
+    "fix_critical": 0.8431071737251513,
+    "fix_high": 0.9401650344577439,
+    "fix_medium": 0.9774676850763806,
+    "fix_low": 1,
+    "fix_all": 1
+  },
+  "rules_source": "https://github.com/trustabl/trustabl-rules",
+  "rules_version": "d77749c5299d470297ee1040a6c8167a759f7004",
+  "rules_from_cache": true,
+  "rules_schema_version": 12,
+  "rules_origin": {
+    "signed": false
+  },
+  "coverage": {
+    "files_parsed": 1,
+    "files_skipped": 0
+  }
+}

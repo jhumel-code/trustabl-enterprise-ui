@@ -17,9 +17,10 @@ const location = (e: InventoryEntity): string =>
 const sortKey = (e: InventoryEntity, col: SortCol): string =>
   col === 'location' ? location(e) : col === 'name' ? e.name : e.kind
 
-const HEADERS: { id: SortCol | 'caps'; label: string; sortable: boolean; className?: string }[] = [
+const HEADERS: { id: SortCol | 'caps' | 'repo'; label: string; sortable: boolean; className?: string }[] = [
   { id: 'kind', label: 'Kind', sortable: true, className: 'w-20' },
   { id: 'name', label: 'Component', sortable: true },
+  { id: 'repo', label: 'Repository', sortable: false, className: 'w-40' },
   { id: 'caps', label: 'Capabilities', sortable: false, className: 'w-full' },
   { id: 'location', label: 'Location', sortable: true },
 ]
@@ -105,6 +106,7 @@ function InventoryTable() {
                   <div className="font-medium text-fg">{e.name}</div>
                   {e.meta && <div className="font-mono text-[11px] text-fg-subtle">{e.meta}</div>}
                 </td>
+                <td className="whitespace-nowrap px-3 py-3 align-top text-xs text-fg-muted">{e.repoId}</td>
                 <td className="px-3 py-3 align-top">
                   <div className="flex flex-wrap gap-1">
                     {(e.tags ?? []).map((t, ti) => (
@@ -142,7 +144,7 @@ export function InventoryPage() {
             count: surfaces.length,
             content: (
               <Card>
-                <SurfaceList surfaces={surfaces} />
+                <SurfaceList surfaces={surfaces} showRepo />
               </Card>
             ),
           },

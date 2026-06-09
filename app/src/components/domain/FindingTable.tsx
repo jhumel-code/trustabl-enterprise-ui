@@ -4,26 +4,28 @@ import { ScopeBadge } from './ScopeBadge'
 import { locationLabel, SEVERITY_ORDER } from '@/lib/format'
 import { cn } from '@/lib/cn'
 
-const HEADERS: Array<{ label: string; className?: string }> = [
-  { label: 'Sev' },
-  { label: 'Finding' },
-  { label: 'Scope' },
-  { label: 'Location' },
-  { label: 'Conf.', className: 'text-right' },
-  { label: 'Status' },
-]
-
 export function FindingTable({
   findings,
   onSelect,
   selected,
   sort = 'severity',
+  showRepo = false,
 }: {
   findings: Finding[]
   onSelect?: (f: Finding) => void
   selected?: Finding | null
   sort?: 'severity' | 'none'
+  showRepo?: boolean
 }) {
+  const headers: Array<{ label: string; className?: string }> = [
+    { label: 'Sev' },
+    { label: 'Finding' },
+    ...(showRepo ? [{ label: 'Repository' }] : []),
+    { label: 'Scope' },
+    { label: 'Location' },
+    { label: 'Conf.', className: 'text-right' },
+    { label: 'Status' },
+  ]
   const rows =
     sort === 'none'
       ? findings
@@ -32,7 +34,7 @@ export function FindingTable({
     <table className="w-full border-collapse text-sm">
       <thead>
         <tr>
-          {HEADERS.map((h) => (
+          {headers.map((h) => (
             <th
               key={h.label}
               className={cn(
@@ -60,6 +62,9 @@ export function FindingTable({
               <SeverityBadge severity={f.severity} />
             </td>
             <td className="w-full px-2.5 py-2.5 align-top">{f.title}</td>
+            {showRepo && (
+              <td className="whitespace-nowrap px-2.5 py-2.5 align-top text-xs text-fg-muted">{f.repoId}</td>
+            )}
             <td className="whitespace-nowrap px-2.5 py-2.5 align-top">
               <ScopeBadge scope={f.scope} />
             </td>

@@ -1,8 +1,8 @@
-import { inventory } from '@/data/loadScan'
+import { inventory as fleetInventory } from '@/data/loadScan'
 
-/** Inventory counts from the scan's discovered entity lists. Expand into a real
- *  tree (per-entity rows with file:line) when wiring the full inventory. */
-export function InventoryTree() {
+/** Inventory counts from discovered entity lists. Defaults to the fleet-wide
+ *  totals; pass `inventory` to scope it to a single scan. */
+export function InventoryTree({ inventory = fleetInventory }: { inventory?: Array<{ label: string; n: number }> }) {
   return (
     <ul className="text-sm">
       {inventory.map((g) => (
