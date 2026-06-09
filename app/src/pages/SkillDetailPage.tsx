@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Dependency, Skill } from '@/types'
+import type { Dependency, Finding, Skill } from '@/types'
 import { dependencies, findings, skills } from '@/data/loadScan'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
@@ -10,6 +10,7 @@ import { DataTable } from '@/components/ui/DataTable'
 import { Drawer } from '@/components/ui/Drawer'
 import { SkillBundleView } from '@/components/domain/SkillBundleView'
 import { FindingList } from '@/components/domain/FindingList'
+import { FindingDetailPanel } from '@/components/domain/FindingDetailPanel'
 
 const depColumns: { header: string; cell: (row: Dependency) => ReactNode; className?: string }[] = [
   { header: 'Name', cell: (d) => <span className="text-fg">{d.name}</span> },
@@ -22,6 +23,7 @@ const depColumns: { header: string; cell: (row: Dependency) => ReactNode; classN
  *  drawer. The repo-wide dependency BOM is a separate card (not skill-scoped). */
 export function SkillDetailPage() {
   const [selected, setSelected] = useState<Skill | null>(null)
+  const [finding, setFinding] = useState<Finding | null>(null)
   const contentFindings = selected ? findings.filter((f) => f.filePath === selected.filePath) : []
 
   const skillColumns: { header: string; cell: (s: Skill) => ReactNode; className?: string }[] = [
@@ -61,8 +63,29 @@ export function SkillDetailPage() {
         </Card>
       </div>
 
-      <Drawer open={!!selected} onClose={() => setSelected(null)} title="Skill">
-        {selected && (
+      <Drawer
+        open={!!selected}
+        onClose={() => {
+          setSelected(null)
+          setFinding(null)
+        }}
+        title={finding ? 'Finding' : 'Skill'}
+      >
+        {finding ? (
+          <div className="space-y-4">
+            <button
+              type="button"
+              onClick={() => setFinding(null)}
+              className="text-sm text-brand-emphasis hover:underline"
+            >
+              ← Back to skill
+            </button>
+            <FindingDetailPanel
+              key={`${finding.ruleId}:${finding.filePath}:${finding.startLine}`}
+              finding={finding}
+            />
+          </div>
+        ) : selected ? (
           <div className="space-y-5">
             <SkillBundleView skill={selected} />
             <div>
@@ -70,13 +93,13 @@ export function SkillDetailPage() {
                 Content findings · {contentFindings.length}
               </div>
               {contentFindings.length > 0 ? (
-                <FindingList findings={contentFindings} />
+                <FindingList findings={contentFindings} onSelect={setFinding} />
               ) : (
                 <div className="py-2 text-sm text-fg-muted">No content findings for this skill.</div>
               )}
             </div>
           </div>
-        )}
+        ) : null}
       </Drawer>
     </>
   )
