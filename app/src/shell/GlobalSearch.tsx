@@ -116,7 +116,7 @@ export function GlobalSearch() {
   const showDropdown = open && query.trim().length > 0
 
   return (
-    <div ref={rootRef} className="relative hidden w-60 sm:block lg:w-72">
+    <div ref={rootRef} className="relative hidden w-72 min-w-0 shrink sm:block">
       <input
         value={query}
         onChange={(e) => {
