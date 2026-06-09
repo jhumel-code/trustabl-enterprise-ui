@@ -73,10 +73,7 @@ export function SurfaceDetailPage() {
                     <FindingTable findings={detailFindings} />
                   </div>
                 ) : (
-                  <EmptyState
-                    title="No findings"
-                    description="No findings attributed to this surface."
-                  />
+                  <div className="py-4 text-sm text-fg-muted">No findings attributed to this surface.</div>
                 )}
               </div>
             </Card>

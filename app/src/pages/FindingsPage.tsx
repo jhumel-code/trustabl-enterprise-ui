@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
+import { Drawer } from '@/components/ui/Drawer'
 import { EmptyState } from '@/components/ui/EmptyState'
 
 const SEV_DOT: Record<Severity, string> = {
@@ -27,7 +28,8 @@ const sevCount = (s: Severity) => findings.filter((f) => f.severity === s).lengt
 const scopeOptions = [...new Set(findings.map(scopeKey))].sort()
 const statusOptions = [...new Set(findings.map((f) => f.status))].sort()
 
-/** Findings browser — search, facet filters, sort, and a detail rail. */
+/** Findings browser — search, facet filters, sort, full-width table; the detail
+ *  opens in a slide-over drawer (matching the Scan-overview finding interaction). */
 export function FindingsPage() {
   const [query, setQuery] = useState('')
   const [sevSel, setSevSel] = useState<Set<Severity>>(new Set())
@@ -72,118 +74,108 @@ export function FindingsPage() {
   }, [query, sevSel, scope, status, sort])
 
   return (
-    <div className="flex flex-col gap-6">
-      <PageHeader
-        title="Findings"
-        subtitle={`${findings.length} findings in ${repo.name} · ${surfaces.length} surfaces`}
-      />
+    <>
+      <div className="flex flex-col gap-6">
+        <PageHeader
+          title="Findings"
+          subtitle={`${findings.length} findings in ${repo.name} · ${surfaces.length} surfaces`}
+        />
 
-      {/* severity summary — also filters */}
-      <div className="flex flex-wrap gap-2">
-        {SEVERITY_ORDER.map((s) => {
-          const n = sevCount(s)
-          const on = sevSel.has(s)
-          return (
-            <button
-              key={s}
-              type="button"
-              onClick={() => toggleSev(s)}
-              className={cn(
-                'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm capitalize',
-                on ? 'border-brand bg-inset text-fg' : 'border-strong text-fg-muted hover:text-fg',
-              )}
-            >
-              <span className={cn('h-2 w-2 rounded-full', SEV_DOT[s])} />
-              {s}
-              <span className="font-mono text-fg-subtle">{n}</span>
-            </button>
-          )
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
-        <div className="flex min-w-0 flex-col gap-3">
-          {/* toolbar */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="w-full sm:w-56">
-              <Input
-                placeholder="Search title, rule, file…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-            <div className="w-32">
-              <Select value={scope} onChange={(e) => setScope(e.target.value)}>
-                <option value="all">All scopes</option>
-                {scopeOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="w-32">
-              <Select value={status} onChange={(e) => setStatus(e.target.value)}>
-                <option value="all">All statuses</option>
-                {statusOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="w-40">
-              <Select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
-                <option value="severity">Sort: severity</option>
-                <option value="confidence">Sort: confidence</option>
-                <option value="location">Sort: location</option>
-              </Select>
-            </div>
-            <span className="ml-auto text-xs text-fg-muted">
-              {filtered.length} of {findings.length}
-            </span>
-            {active && (
-              <Button size="sm" variant="ghost" onClick={clearAll}>
-                Clear
-              </Button>
-            )}
-          </div>
-
-          <Card className="p-0">
-            <div className="overflow-auto p-2">
-              {filtered.length > 0 ? (
-                <FindingTable findings={filtered} sort="none" onSelect={setSelected} selected={selected} />
-              ) : (
-                <EmptyState
-                  title="No findings match"
-                  description="Adjust the filters or clear them to see all findings."
-                  action={
-                    <Button size="sm" variant="secondary" onClick={clearAll}>
-                      Clear filters
-                    </Button>
-                  }
-                />
-              )}
-            </div>
-          </Card>
+        {/* severity summary — also filters */}
+        <div className="flex flex-wrap gap-2">
+          {SEVERITY_ORDER.map((s) => {
+            const on = sevSel.has(s)
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => toggleSev(s)}
+                className={cn(
+                  'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm capitalize',
+                  on ? 'border-brand bg-inset text-fg' : 'border-strong text-fg-muted hover:text-fg',
+                )}
+              >
+                <span className={cn('h-2 w-2 rounded-full', SEV_DOT[s])} />
+                {s}
+                <span className="font-mono text-fg-subtle">{sevCount(s)}</span>
+              </button>
+            )
+          })}
         </div>
 
-        <aside>
-          <Card>
-            {selected ? (
-              <FindingDetailPanel
-                key={`${selected.ruleId}:${selected.filePath}:${selected.startLine}`}
-                finding={selected}
-              />
-            ) : (
-              <EmptyState
-                title="No finding selected"
-                description="Pick a finding from the table to see its explanation, fix, and provenance."
-              />
-            )}
+        {/* toolbar */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="w-full sm:w-64">
+            <Input
+              placeholder="Search title, rule, file…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="w-32">
+            <Select value={scope} onChange={(e) => setScope(e.target.value)}>
+              <option value="all">All scopes</option>
+              {scopeOptions.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="w-32">
+            <Select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="all">All statuses</option>
+              {statusOptions.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="w-40">
+            <Select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
+              <option value="severity">Sort: severity</option>
+              <option value="confidence">Sort: confidence</option>
+              <option value="location">Sort: location</option>
+            </Select>
+          </div>
+          <span className="ml-auto text-xs text-fg-muted">
+            {filtered.length} of {findings.length}
+          </span>
+          {active && (
+            <Button size="sm" variant="ghost" onClick={clearAll}>
+              Clear
+            </Button>
+          )}
+        </div>
+
+        {filtered.length > 0 ? (
+          <Card className="p-0">
+            <div className="overflow-auto p-2">
+              <FindingTable findings={filtered} sort="none" onSelect={setSelected} selected={selected} />
+            </div>
           </Card>
-        </aside>
+        ) : (
+          <EmptyState
+            title="No findings match"
+            description="Adjust the filters or clear them to see all findings."
+            action={
+              <Button size="sm" variant="secondary" onClick={clearAll}>
+                Clear filters
+              </Button>
+            }
+          />
+        )}
       </div>
-    </div>
+
+      <Drawer open={!!selected} onClose={() => setSelected(null)} title="Finding">
+        {selected && (
+          <FindingDetailPanel
+            key={`${selected.ruleId}:${selected.filePath}:${selected.startLine}`}
+            finding={selected}
+          />
+        )}
+      </Drawer>
+    </>
   )
 }
