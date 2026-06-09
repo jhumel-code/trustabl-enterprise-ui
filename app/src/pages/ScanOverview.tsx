@@ -92,7 +92,12 @@ export function ScanOverview() {
     </div>
 
     <Drawer open={!!selected} onClose={() => setSelected(null)} title="Finding">
-      {selected && <FindingDetailPanel finding={selected} />}
+      {selected && (
+        <FindingDetailPanel
+          key={`${selected.ruleId}:${selected.filePath}:${selected.startLine}`}
+          finding={selected}
+        />
+      )}
     </Drawer>
     </>
   )

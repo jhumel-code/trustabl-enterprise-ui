@@ -29,7 +29,10 @@ export function FindingsPage() {
         <FilterPanel findings={findings} surfaces={surfaces} />
         <Card>
           {selected ? (
-            <FindingDetailPanel finding={selected} />
+            <FindingDetailPanel
+              key={`${selected.ruleId}:${selected.filePath}:${selected.startLine}`}
+              finding={selected}
+            />
           ) : (
             <div className="text-sm text-fg-muted">Select a finding to see its detail.</div>
           )}
