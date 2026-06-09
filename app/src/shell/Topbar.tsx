@@ -1,3 +1,4 @@
+import { Menu } from 'lucide-react'
 import { UserMenu } from './UserMenu'
 import { GlobalSearch } from './GlobalSearch'
 import { NotificationMenu } from './NotificationMenu'
@@ -16,19 +17,7 @@ export function Topbar({ onMenu }: { onMenu?: () => void } = {}) {
           aria-label="Open navigation"
           className="-ml-1 rounded-md p-1.5 text-fg-muted hover:bg-inset hover:text-fg lg:hidden"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
+          <Menu size={20} />
         </button>
       )}
       <span className="flex items-center gap-2 whitespace-nowrap font-bold tracking-tight">

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Search } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { pct } from '@/lib/format'
 import { repos, rulePacks } from '@/data/platform'
@@ -117,19 +118,11 @@ export function GlobalSearch() {
 
   return (
     <div ref={rootRef} className="relative hidden w-72 min-w-0 shrink sm:block">
-      <svg
+      <Search
         aria-hidden="true"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle"
-      >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m21 21-4.3-4.3" />
-      </svg>
+        size={16}
+        className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-fg-subtle"
+      />
       <input
         value={query}
         onChange={(e) => {

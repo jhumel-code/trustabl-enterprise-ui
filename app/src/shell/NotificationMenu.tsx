@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Bell, X } from 'lucide-react'
 import { notifications as seed, type AppNotification } from '@/data/platform'
 import { cn } from '@/lib/cn'
 
@@ -47,10 +48,7 @@ export function NotificationMenu() {
         aria-label={`Notifications${unread ? ` (${unread} unread)` : ''}`}
         className="relative rounded-md p-1.5 text-fg-muted hover:bg-inset hover:text-fg"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-        </svg>
+        <Bell size={18} />
         {unread > 0 && (
           <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-[16px] place-items-center rounded-full bg-status-danger px-1 text-[10px] font-semibold leading-none text-white">
             {unread}
@@ -99,9 +97,7 @@ export function NotificationMenu() {
                       aria-label="Dismiss notification"
                       className="-m-1 shrink-0 rounded p-1 text-fg-subtle hover:bg-inset hover:text-fg"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="M18 6 6 18M6 6l12 12" />
-                      </svg>
+                      <X size={14} />
                     </button>
                   </div>
                 </li>

@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { X } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
 export type ToastTone = 'success' | 'error' | 'warning' | 'info'
@@ -99,9 +100,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               aria-label="Dismiss notification"
               className="-m-1 shrink-0 rounded p-1 text-fg-subtle hover:bg-inset hover:text-fg"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
+              <X size={14} />
             </button>
           </div>
         ))}
