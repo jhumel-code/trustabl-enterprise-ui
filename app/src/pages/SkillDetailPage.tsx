@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { DataTable } from '@/components/ui/DataTable'
 import { Drawer } from '@/components/ui/Drawer'
 import { SkillBundleView } from '@/components/domain/SkillBundleView'
-import { FindingTable } from '@/components/domain/FindingTable'
+import { FindingList } from '@/components/domain/FindingList'
 
 const depColumns: { header: string; cell: (row: Dependency) => ReactNode; className?: string }[] = [
   { header: 'Name', cell: (d) => <span className="text-fg">{d.name}</span> },
@@ -70,7 +70,7 @@ export function SkillDetailPage() {
                 Content findings · {contentFindings.length}
               </div>
               {contentFindings.length > 0 ? (
-                <FindingTable findings={contentFindings} />
+                <FindingList findings={contentFindings} />
               ) : (
                 <div className="py-2 text-sm text-fg-muted">No content findings for this skill.</div>
               )}

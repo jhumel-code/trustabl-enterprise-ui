@@ -7,7 +7,7 @@ import { TableCard } from '@/components/ui/TableCard'
 import { DataTable } from '@/components/ui/DataTable'
 import { Drawer } from '@/components/ui/Drawer'
 import { ScopeBadge } from '@/components/domain/ScopeBadge'
-import { FindingTable } from '@/components/domain/FindingTable'
+import { FindingList } from '@/components/domain/FindingList'
 import { pct } from '@/lib/format'
 
 /** Surfaces browser — full-width list; the surface detail opens in a drawer. */
@@ -67,7 +67,7 @@ export function SurfaceDetailPage() {
                 {detailFindings.length} finding{detailFindings.length === 1 ? '' : 's'} on this surface
               </div>
               {detailFindings.length > 0 ? (
-                <FindingTable findings={detailFindings} />
+                <FindingList findings={detailFindings} />
               ) : (
                 <div className="py-2 text-sm text-fg-muted">No findings attributed to this surface.</div>
               )}
