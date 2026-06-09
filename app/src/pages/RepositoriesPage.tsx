@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
 import { DataTable } from '@/components/ui/DataTable'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /** All repositories — the full control-plane fleet list. Searchable by name and
  *  sortable on every column so it stays usable as the fleet grows; defaults to
@@ -16,6 +17,7 @@ import { DataTable } from '@/components/ui/DataTable'
 export function RepositoriesPage() {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [scanTarget, setScanTarget] = useState<RepoSummary | null>(null)
 
   const q = query.trim().toLowerCase()
   const filtered = q ? repos.filter((r) => r.name.toLowerCase().includes(q)) : repos
@@ -62,6 +64,22 @@ export function RepositoriesPage() {
       sortKey: (r: RepoSummary) => r.lastScan,
       cell: (r: RepoSummary) => <span className="text-fg-muted">{r.lastScan}</span>,
     },
+    {
+      header: '',
+      className: 'w-[1%] whitespace-nowrap text-right',
+      cell: (r: RepoSummary) => (
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation()
+            setScanTarget(r)
+          }}
+        >
+          Scan
+        </Button>
+      ),
+    },
   ]
 
   return (
@@ -100,6 +118,15 @@ export function RepositoriesPage() {
           />
         </div>
       </Card>
+
+      <ConfirmDialog
+        open={!!scanTarget}
+        onClose={() => setScanTarget(null)}
+        onConfirm={() => setScanTarget(null)}
+        title={scanTarget ? `Scan ${scanTarget.name}?` : 'Scan repository'}
+        message="This will queue a fresh scan of the repository."
+        confirmLabel="Scan"
+      />
     </div>
   )
 }
