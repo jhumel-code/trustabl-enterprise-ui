@@ -38,18 +38,19 @@ export function OverviewPage() {
   const repoColumns = [
     {
       header: 'Repository',
-      cell: (r: RepoSummary) => (
-        <div className="flex items-center gap-2">
-          <span className="truncate font-medium text-fg">{r.name}</span>
-          {r.demo ? (
-            <Badge tone="neutral">demo</Badge>
-          ) : (
-            <Badge variant="solid" tone={r.gate === 'pass' ? 'success' : 'danger'}>
-              {r.gate}
-            </Badge>
-          )}
-        </div>
-      ),
+      cell: (r: RepoSummary) => <span className="truncate font-medium text-fg">{r.name}</span>,
+    },
+    {
+      header: 'Gate',
+      className: 'w-[90px]',
+      cell: (r: RepoSummary) =>
+        r.demo ? (
+          <Badge tone="neutral">demo</Badge>
+        ) : (
+          <Badge variant="solid" tone={r.gate === 'pass' ? 'success' : 'danger'}>
+            {r.gate}
+          </Badge>
+        ),
     },
     {
       header: 'Readiness',

@@ -28,18 +28,20 @@ export function RepositoriesPage() {
     {
       header: 'Repository',
       sortKey: (r: RepoSummary) => r.name,
-      cell: (r: RepoSummary) => (
-        <div className="flex items-center gap-2">
-          <span className="truncate font-medium text-fg">{r.name}</span>
-          {r.demo ? (
-            <Badge tone="neutral">demo</Badge>
-          ) : (
-            <Badge variant="solid" tone={r.gate === 'pass' ? 'success' : 'danger'}>
-              {r.gate}
-            </Badge>
-          )}
-        </div>
-      ),
+      cell: (r: RepoSummary) => <span className="truncate font-medium text-fg">{r.name}</span>,
+    },
+    {
+      header: 'Gate',
+      className: 'w-[90px]',
+      sortKey: (r: RepoSummary) => (r.demo ? 'demo' : r.gate),
+      cell: (r: RepoSummary) =>
+        r.demo ? (
+          <Badge tone="neutral">demo</Badge>
+        ) : (
+          <Badge variant="solid" tone={r.gate === 'pass' ? 'success' : 'danger'}>
+            {r.gate}
+          </Badge>
+        ),
     },
     {
       header: 'Readiness',
@@ -115,7 +117,7 @@ export function RepositoriesPage() {
             columns={columns}
             rows={filtered}
             onRowClick={(r) => navigate(`/repos/${r.id}`)}
-            initialSort={{ col: 1, dir: 'asc' }}
+            initialSort={{ col: 2, dir: 'asc' }}
             empty={q ? 'No repositories match your search.' : 'No repositories onboarded yet.'}
           />
         </div>
