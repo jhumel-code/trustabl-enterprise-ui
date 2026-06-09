@@ -1,4 +1,5 @@
 import { ThemeToggle } from './ThemeToggle'
+import { ConnectivityBadge } from './ConnectivityBadge'
 
 export function Topbar() {
   return (
@@ -13,9 +14,7 @@ export function Topbar() {
         className="max-w-[520px] flex-1 rounded-md border border-strong bg-inset px-2.5 py-1.5 text-sm text-fg-muted"
         placeholder="Search repos · findings · rules…"
       />
-      <span className="ml-auto rounded-full border border-strong px-2 py-[3px] text-xs text-brand-emphasis">
-        ⛓ air-gapped · offline OK
-      </span>
+      <ConnectivityBadge />
       <ThemeToggle />
       <span className="grid h-7 w-7 place-items-center rounded-full border border-strong text-xs text-fg-muted">
         IB
