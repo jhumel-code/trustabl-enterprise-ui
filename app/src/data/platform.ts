@@ -44,6 +44,23 @@ export const auditEvents = [
   { id: 'ev_1031', at: '2026-06-07 11:20', actor: 'system', action: 'rules.update', target: 'd77749c5' },
 ]
 
+export interface AppNotification {
+  id: string
+  title: string
+  description: string
+  time: string
+  tone: 'success' | 'danger' | 'warning' | 'info'
+  read: boolean
+}
+
+export const notifications: AppNotification[] = [
+  { id: 'nt_5', title: 'Gate failed on email-agent', description: 'CSDK-110 (high) tripped the gate on the latest scan.', time: '2m ago', tone: 'danger', read: false },
+  { id: 'nt_4', title: 'Scan completed', description: 'email-agent · scan_fdcdb91c finished with 8 findings.', time: '1h ago', tone: 'success', read: false },
+  { id: 'nt_3', title: 'Rule pack updated', description: 'trustabl-rules advanced to d77749c5.', time: '3h ago', tone: 'info', read: false },
+  { id: 'nt_2', title: 'Waiver expiring soon', description: 'CSKILL-020 waiver expires in 3 days.', time: '1d ago', tone: 'warning', read: true },
+  { id: 'nt_1', title: 'Member joined', description: 'ci@example.com was added as Developer.', time: '2d ago', tone: 'info', read: true },
+]
+
 export const members = [
   { id: 'u1', name: 'Alex Rivera', email: 'a.rivera@example.com', role: 'Admin', sso: true },
   { id: 'u2', name: 'Sam Chen', email: 's.chen@example.com', role: 'Security lead', sso: true },

@@ -1,6 +1,7 @@
 import { ThemeToggle } from './ThemeToggle'
 import { UserMenu } from './UserMenu'
 import { GlobalSearch } from './GlobalSearch'
+import { NotificationMenu } from './NotificationMenu'
 import { TopNav } from './TopNav'
 
 /** Global top bar with inline primary navigation. Below `lg` the nav collapses,
@@ -35,8 +36,9 @@ export function Topbar({ onMenu }: { onMenu?: () => void } = {}) {
         <img src={`${import.meta.env.BASE_URL}brand/logo-mark.png`} alt="" className="block h-6 w-6" /> Trustabl
       </span>
       <TopNav />
-      <div className="ml-auto flex min-w-0 items-center gap-3">
+      <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-3">
         <GlobalSearch />
+        <NotificationMenu />
         <ThemeToggle />
         <UserMenu />
       </div>
