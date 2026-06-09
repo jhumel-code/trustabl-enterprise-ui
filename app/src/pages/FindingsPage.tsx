@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import type { Finding, Severity } from '@/types'
 import { findings, repo, surfaces } from '@/data/loadScan'
 import { SEVERITY_ORDER } from '@/lib/format'
@@ -31,7 +32,8 @@ const statusOptions = [...new Set(findings.map((f) => f.status))].sort()
 /** Findings browser — search, facet filters, sort, full-width table; the detail
  *  opens in a slide-over drawer (matching the Scan-overview finding interaction). */
 export function FindingsPage() {
-  const [query, setQuery] = useState('')
+  const [searchParams] = useSearchParams()
+  const [query, setQuery] = useState(searchParams.get('q') ?? '')
   const [sevSel, setSevSel] = useState<Set<Severity>>(new Set())
   const [scope, setScope] = useState('all')
   const [status, setStatus] = useState('all')

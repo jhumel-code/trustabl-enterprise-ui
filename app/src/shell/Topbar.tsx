@@ -1,5 +1,6 @@
 import { ThemeToggle } from './ThemeToggle'
 import { UserMenu } from './UserMenu'
+import { GlobalSearch } from './GlobalSearch'
 
 /** Global top bar. Below `lg` the sidebar is hidden, so a hamburger button
  *  (wired to `onMenu`) opens it as a slide-over; the search field collapses on
@@ -32,12 +33,7 @@ export function Topbar({ onMenu }: { onMenu?: () => void } = {}) {
       <span className="flex items-center gap-2 whitespace-nowrap font-bold tracking-tight">
         <img src={`${import.meta.env.BASE_URL}brand/logo-mark.png`} alt="" className="block h-6 w-6" /> Trustabl
       </span>
-      <input
-        readOnly
-        title="Search coming soon"
-        className="hidden max-w-[520px] flex-1 cursor-not-allowed rounded-md border border-strong bg-inset px-2.5 py-1.5 text-sm text-fg-muted sm:block"
-        placeholder="Search repos · findings · rules…"
-      />
+      <GlobalSearch />
       <div className="flex-1 sm:hidden" />
       <ThemeToggle />
       <UserMenu />
