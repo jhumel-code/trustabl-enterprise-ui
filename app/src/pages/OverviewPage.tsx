@@ -26,10 +26,7 @@ export function OverviewPage() {
   const avgScore = repos.reduce((sum, r) => sum + r.score, 0) / Math.max(repos.length, 1)
   const totalFindings = repos.reduce((sum, r) => sum + r.findings, 0)
   const gatesFailing = repos.filter((r) => r.gate === 'fail').length
-  const demoCount = repos.filter((r) => r.demo).length
-  const liveCount = repos.length - demoCount
-  const liveFindings = repos.filter((r) => !r.demo).reduce((sum, r) => sum + r.findings, 0)
-  const demoFindings = totalFindings - liveFindings
+  const repoWord = repos.length === 1 ? 'repository' : 'repositories'
 
   const navigate = useNavigate()
   const toast = useToast()
@@ -84,7 +81,7 @@ export function OverviewPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Overview"
-        subtitle={`${org.name} · ${repos.length} repositories`}
+        subtitle={`${org.name} · ${repos.length} ${repoWord}`}
         actions={
           <Button variant="secondary" onClick={handleExport}>
             Export report
@@ -101,29 +98,26 @@ export function OverviewPage() {
               Fleet readiness
             </div>
             <div className="mt-1 text-sm text-fg-muted">
-              Mean across {repos.length} {repos.length === 1 ? 'repository' : 'repositories'}
-            </div>
-            <div className="mt-0.5 text-xs text-fg-subtle">
-              {liveCount} live · {demoCount} demo
+              {repos.length === 1 ? 'Readiness of' : 'Mean across'} {repos.length} {repoWord}
             </div>
           </div>
         </Card>
         <Stat
           label="Repositories"
           value={repos.length}
-          sub={`${liveCount} live · ${demoCount} demo`}
+          sub={`${repos.length} scanned`}
           icon={<FolderGit2 size={14} className="text-fg-muted" />}
         />
         <Stat
           label="Total findings"
           value={totalFindings}
-          sub={`${liveFindings} live · ${demoFindings} demo`}
+          sub={`across ${repos.length} ${repoWord}`}
           icon={<TriangleAlert size={14} className="text-status-warning" />}
         />
         <Stat
           label="Gates failing"
           value={gatesFailing}
-          sub={`of ${repos.length} ${repos.length === 1 ? 'repository' : 'repositories'}`}
+          sub={`of ${repos.length} ${repoWord}`}
           icon={
             gatesFailing > 0 ? (
               <ShieldX size={14} className="text-status-danger" />

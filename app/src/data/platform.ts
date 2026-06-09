@@ -17,9 +17,6 @@ export const repos: RepoSummary[] = [
     trend: [0.61, 0.63, 0.66, 0.7, 0.75, scan.overallScore],
     scanRoute: realScanRoute,
   },
-  { id: 'payments-service', name: 'payments-service', score: 0.92, gate: 'pass', findings: 3, lastScan: '2026-06-09', trend: [0.8, 0.82, 0.85, 0.88, 0.9, 0.92], demo: true },
-  { id: 'support-copilot', name: 'support-copilot', score: 0.54, gate: 'fail', findings: 14, lastScan: '2026-06-08', trend: [0.7, 0.66, 0.6, 0.58, 0.55, 0.54], demo: true },
-  { id: 'data-pipeline-agent', name: 'data-pipeline-agent', score: 0.81, gate: 'pass', findings: 5, lastScan: '2026-06-07', trend: [0.74, 0.76, 0.78, 0.79, 0.8, 0.81], demo: true },
 ]
 
 export const integrations: Integration[] = [

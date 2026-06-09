@@ -88,7 +88,7 @@ export function RepositoriesPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Repositories"
-        subtitle={`${repos.length} repositories`}
+        subtitle={`${repos.length} ${repos.length === 1 ? 'repository' : 'repositories'}`}
         actions={
           <Button variant="primary" onClick={() => navigate('/onboarding')}>
             Add repository
@@ -100,7 +100,7 @@ export function RepositoriesPage() {
           <div className="flex items-baseline gap-2">
             <h2 className="text-sm font-semibold">Repositories</h2>
             <span className="text-xs text-fg-muted">
-              {q ? `${filtered.length} of ${repos.length}` : `${repos.length} repos`}
+              {q ? `${filtered.length} of ${repos.length}` : `${repos.length} ${repos.length === 1 ? 'repo' : 'repos'}`}
             </span>
           </div>
           <Input
