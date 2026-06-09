@@ -3,7 +3,7 @@
 # Commit and push all local changes to origin/main.
 #
 # main auto-deploys to GitHub Pages, so the live site updates within ~1 minute:
-#   https://jhumel-code.github.io/trustabl-enterprise-ui/
+#   https://jhumel-code.github.io/trustabl-web/
 #
 # Usage:
 #   ./scripts/push.sh "feat: describe what changed"

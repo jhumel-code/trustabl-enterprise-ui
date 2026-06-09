@@ -6,7 +6,7 @@
 (via [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)),
 so pushing to `main` publishes the live site within ~1 minute:
 
-> https://jhumel-code.github.io/trustabl-enterprise-ui/
+> https://jhumel-code.github.io/trustabl-web/
 
 ### Push everything (one step)
 
