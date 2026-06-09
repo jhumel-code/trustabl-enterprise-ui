@@ -12,19 +12,19 @@ export function IntegrationCard({ integration }: { integration: Integration }) {
   const [connected, setConnected] = useState(integration.status === 'connected')
 
   return (
-    <div className="rounded-lg border bg-surface p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="font-medium">{integration.name}</div>
+    <div className="flex h-full flex-col rounded-lg border bg-surface p-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="truncate font-medium">{integration.name}</div>
           <div className="text-xs text-fg-subtle">{integration.kind}</div>
         </div>
-        <span className="inline-flex items-center gap-1.5 text-xs text-fg-muted">
+        <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-fg-muted">
           <StatusDot tone={connected ? 'success' : DOT[integration.status]} />
           {connected ? 'connected' : integration.status}
         </span>
       </div>
       <p className="mt-2 text-sm text-fg-muted">{integration.detail}</p>
-      <div className="mt-3">
+      <div className="mt-auto pt-3">
         <Button variant={connected ? 'ghost' : 'secondary'} onClick={() => setOpen(true)}>
           {connected ? 'Configure' : 'Connect'}
         </Button>
