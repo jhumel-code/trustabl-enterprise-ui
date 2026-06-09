@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { members as seedMembers, roles } from '@/data/platform'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'
@@ -46,64 +46,58 @@ export function MembersPage() {
         }
       />
 
-      <Card className="p-0">
-        <div className="border-b px-4 py-3 text-sm font-medium">Members</div>
-        <div className="overflow-auto p-2">
-          <DataTable<Member>
-            rows={members}
-            empty="No members."
-            columns={[
-              { header: 'Name', cell: (m) => <span className="font-medium">{m.name}</span> },
-              { header: 'Email', cell: (m) => <span className="font-mono text-xs text-fg-muted">{m.email}</span> },
-              { header: 'Role', cell: (m) => <Badge>{m.role}</Badge> },
-              {
-                header: 'Auth',
-                cell: (m) =>
-                  m.sso ? <span className="text-status-success">✓ SSO</span> : <span className="text-fg-subtle">local</span>,
-              },
-              {
-                header: '',
-                className: 'text-right',
-                cell: (m) => (
-                  <span className="flex justify-end gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => setEditing(m)}>
-                      Edit
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-status-danger" onClick={() => setRemoving(m)}>
-                      Remove
-                    </Button>
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </div>
-      </Card>
+      <TableCard title="Members" count={`${members.length}`}>
+        <DataTable<Member>
+          rows={members}
+          empty="No members."
+          columns={[
+            { header: 'Name', cell: (m) => <span className="font-medium">{m.name}</span> },
+            { header: 'Email', cell: (m) => <span className="font-mono text-xs text-fg-muted">{m.email}</span> },
+            { header: 'Role', cell: (m) => <Badge>{m.role}</Badge> },
+            {
+              header: 'Auth',
+              cell: (m) =>
+                m.sso ? <span className="text-status-success">✓ SSO</span> : <span className="text-fg-subtle">local</span>,
+            },
+            {
+              header: '',
+              className: 'text-right',
+              cell: (m) => (
+                <span className="flex justify-end gap-1">
+                  <Button variant="ghost" size="sm" onClick={() => setEditing(m)}>
+                    Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-status-danger" onClick={() => setRemoving(m)}>
+                    Remove
+                  </Button>
+                </span>
+              ),
+            },
+          ]}
+        />
+      </TableCard>
 
-      <Card className="p-0">
-        <div className="border-b px-4 py-3 text-sm font-medium">Roles (RBAC)</div>
-        <div className="overflow-auto p-2">
-          <DataTable<Role>
-            rows={roles}
-            empty="No roles."
-            columns={[
-              { header: 'Role', cell: (r) => <span className="font-medium">{r.name}</span> },
-              {
-                header: 'Permissions',
-                cell: (r) => (
-                  <div className="flex flex-wrap gap-1.5">
-                    {r.permissions.map((p) => (
-                      <Badge key={p} tone="neutral">
-                        <span className="font-mono text-xs">{p}</span>
-                      </Badge>
-                    ))}
-                  </div>
-                ),
-              },
-            ]}
-          />
-        </div>
-      </Card>
+      <TableCard title="Roles (RBAC)">
+        <DataTable<Role>
+          rows={roles}
+          empty="No roles."
+          columns={[
+            { header: 'Role', cell: (r) => <span className="font-medium">{r.name}</span> },
+            {
+              header: 'Permissions',
+              cell: (r) => (
+                <div className="flex flex-wrap gap-1.5">
+                  {r.permissions.map((p) => (
+                    <Badge key={p} tone="neutral">
+                      <span className="font-mono text-xs">{p}</span>
+                    </Badge>
+                  ))}
+                </div>
+              ),
+            },
+          ]}
+        />
+      </TableCard>
 
       <InviteMemberModal
         open={inviteOpen}

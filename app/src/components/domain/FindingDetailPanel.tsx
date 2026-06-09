@@ -54,10 +54,7 @@ export function FindingDetailPanel({ finding }: { finding: Finding }) {
       )}
       {issueKey && (
         <div className="rounded-md border border-strong bg-inset p-3 text-xs">
-          Issue created:{' '}
-          <a href="#issue" className="font-mono text-brand-emphasis">
-            {issueKey}
-          </a>
+          Issue created: <span className="font-mono text-brand-emphasis">{issueKey}</span>
         </div>
       )}
 
@@ -85,7 +82,12 @@ export function FindingDetailPanel({ finding }: { finding: Finding }) {
               pack <b className="font-mono text-fg">{finding.category}</b>
             </div>
           )}
-          <a className="inline-block text-brand-emphasis" href="#rulebook">
+          <a
+            className="inline-block text-brand-emphasis"
+            href="https://github.com/trustabl/trustabl-rulebook"
+            target="_blank"
+            rel="noreferrer"
+          >
             ↗ open rationale in rulebook
           </a>
         </div>

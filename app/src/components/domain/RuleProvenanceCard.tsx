@@ -19,7 +19,12 @@ export function RuleProvenanceCard({ scan, packs }: { scan: Scan; packs: string[
         <KV k="origin" v={originLabel(scan.rulesOrigin)} />
         <KV k="packs" v={packs.join(', ')} />
       </div>
-      <a className="mt-2 inline-block cursor-pointer text-xs text-brand-emphasis" href="#rulebook">
+      <a
+        className="mt-2 inline-block text-xs text-brand-emphasis"
+        href="https://github.com/trustabl/trustabl-rulebook"
+        target="_blank"
+        rel="noreferrer"
+      >
         ↗ open rationale in rulebook
       </a>
     </div>

@@ -4,21 +4,27 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Stat } from '@/components/ui/Stat'
+import { StatusDot } from '@/components/ui/StatusDot'
 import { ScoreGauge } from '@/components/domain/ScoreGauge'
 import { RepoCard } from '@/components/domain/RepoCard'
 import { FindingTable } from '@/components/domain/FindingTable'
-import { cn } from '@/lib/cn'
+import { downloadFile } from '@/lib/download'
 
-const DOT = {
-  connected: 'bg-status-success',
-  disconnected: 'bg-fg-subtle',
-  error: 'bg-status-danger',
+const STATUS_TONE = {
+  connected: 'success',
+  disconnected: 'subtle',
+  error: 'danger',
 } as const
 
 export function OverviewPage() {
   const avgScore = repos.reduce((sum, r) => sum + r.score, 0) / Math.max(repos.length, 1)
   const totalFindings = repos.reduce((sum, r) => sum + r.findings, 0)
   const gatesFailing = repos.filter((r) => r.gate === 'fail').length
+  const demoCount = repos.filter((r) => r.demo).length
+
+  function handleExport() {
+    downloadFile('overview.json', JSON.stringify({ repos, findings: findings.length }, null, 2))
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -26,10 +32,9 @@ export function OverviewPage() {
         title="Overview"
         subtitle={`${org.name} · ${repos.length} repositories`}
         actions={
-          <div className="flex gap-2">
-            <Button variant="secondary">Export report</Button>
-            <Button variant="primary">Add repository</Button>
-          </div>
+          <Button variant="secondary" onClick={handleExport}>
+            Export report
+          </Button>
         }
       />
 
@@ -38,17 +43,27 @@ export function OverviewPage() {
         <Card className="flex items-center gap-4">
           <ScoreGauge value={avgScore} />
           <div>
-            <div className="mb-1 text-xs text-fg-muted">Fleet readiness</div>
+            <div className="mb-1 text-xs text-fg-muted">
+              Fleet readiness · mean across {repos.length} repos ({demoCount} demo)
+            </div>
             <div className="text-sm text-fg-subtle">
-              Mean across {repos.length} repositories
+              Includes {demoCount} demo {demoCount === 1 ? 'repo' : 'repos'} alongside real data
             </div>
           </div>
         </Card>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          <Stat label="Repositories" value={repos.length} dotClass="bg-brand" />
-          <Stat label="Total findings" value={totalFindings} dotClass="bg-severity-medium" />
           <Stat
-            label="Gates failing"
+            label={`Repositories (${demoCount} demo)`}
+            value={repos.length}
+            dotClass="bg-brand"
+          />
+          <Stat
+            label="Total findings (incl. demo)"
+            value={totalFindings}
+            dotClass="bg-severity-medium"
+          />
+          <Stat
+            label="Gates failing (incl. demo)"
             value={gatesFailing}
             dotClass={gatesFailing > 0 ? 'bg-severity-critical' : 'bg-status-success'}
           />
@@ -89,7 +104,7 @@ export function OverviewPage() {
                   <div className="truncate text-xs text-fg-subtle">{i.kind}</div>
                 </div>
                 <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-fg-muted">
-                  <span className={cn('h-2 w-2 rounded-full', DOT[i.status])} />
+                  <StatusDot tone={STATUS_TONE[i.status]} />
                   {i.status}
                 </span>
               </li>

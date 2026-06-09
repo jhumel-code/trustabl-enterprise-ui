@@ -3,6 +3,8 @@ import type { Surface } from '@/types'
 import { surfaces, findingsForEntity } from '@/data/loadScan'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { DataTable } from '@/components/ui/DataTable'
 import { ScopeBadge } from '@/components/domain/ScopeBadge'
 import { FindingTable } from '@/components/domain/FindingTable'
@@ -30,21 +32,19 @@ export function SurfaceDetailPage() {
   const detailFindings = selected ? findingsForEntity(selected.name, selected.filePath) : []
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <PageHeader title="Surfaces" subtitle={`${surfaces.length} analyzed surfaces`} />
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
         <div className="min-w-0">
-          <Card className="p-0">
-            <div className="overflow-auto p-2">
-              <DataTable<Surface>
-                columns={columns}
-                rows={surfaces}
-                onRowClick={setSelected}
-                empty="No surfaces analyzed in this scan."
-              />
-            </div>
-          </Card>
+          <TableCard title="Surfaces" count={`${surfaces.length}`}>
+            <DataTable<Surface>
+              columns={columns}
+              rows={surfaces}
+              onRowClick={setSelected}
+              empty="No surfaces analyzed in this scan."
+            />
+          </TableCard>
         </div>
 
         <aside className="flex flex-col gap-6">
@@ -73,17 +73,21 @@ export function SurfaceDetailPage() {
                     <FindingTable findings={detailFindings} />
                   </div>
                 ) : (
-                  <div className="text-sm text-fg-muted">No findings attributed to this surface.</div>
+                  <EmptyState
+                    title="No findings"
+                    description="No findings attributed to this surface."
+                  />
                 )}
               </div>
             </Card>
           ) : (
-            <Card>
-              <div className="text-sm text-fg-muted">Select a surface to inspect its findings.</div>
-            </Card>
+            <EmptyState
+              title="No surface selected"
+              description="Select a surface to inspect its findings."
+            />
           )}
         </aside>
       </div>
-    </>
+    </div>
   )
 }

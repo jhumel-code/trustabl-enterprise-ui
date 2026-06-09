@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import { auditEvents } from '@/data/platform'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'
+import { downloadFile, toCSV } from '@/lib/download'
 
 type AuditEvent = (typeof auditEvents)[number]
 
@@ -34,21 +35,28 @@ const columns: { header: string; cell: (row: AuditEvent) => ReactNode; className
 /** Audit log (settings) — immutable, append-only record of control-plane events. */
 export function AuditLogPage() {
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <PageHeader
         title="Audit log"
         subtitle="Immutable, append-only"
-        actions={<Button variant="secondary">Export</Button>}
+        actions={
+          <Button
+            variant="secondary"
+            onClick={() =>
+              downloadFile('audit-log.csv', toCSV(auditEvents), 'text/csv')
+            }
+          >
+            Export
+          </Button>
+        }
       />
-      <Card className="p-0">
-        <div className="overflow-auto p-2">
-          <DataTable
-            columns={columns}
-            rows={auditEvents}
-            empty="No audit events recorded yet."
-          />
-        </div>
-      </Card>
-    </>
+      <TableCard title="Audit log" count={`${auditEvents.length}`}>
+        <DataTable
+          columns={columns}
+          rows={auditEvents}
+          empty="No audit events recorded yet."
+        />
+      </TableCard>
+    </div>
   )
 }

@@ -4,6 +4,7 @@ import type { Dependency, Skill } from '@/types'
 import { dependencies, findings, skills } from '@/data/loadScan'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { DataTable } from '@/components/ui/DataTable'
 import { SkillBundleView } from '@/components/domain/SkillBundleView'
 import { FindingTable } from '@/components/domain/FindingTable'
@@ -27,9 +28,9 @@ export function SkillDetailPage() {
       <PageHeader title="Skills" subtitle={`${skills.length} skill${skills.length === 1 ? '' : 's'}`} />
 
       {skills.length === 0 ? (
-        <Card className="text-sm text-fg-muted">No skills discovered in this scan.</Card>
+        <EmptyState title="No skills discovered" />
       ) : (
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[320px_1fr]">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[360px_1fr]">
           {/* skill list */}
           <Card className="min-w-0 p-2">
             <ul className="flex flex-col gap-1">

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Finding } from '@/types'
 import { findings, gate, repo, scan, surfaces } from '@/data/loadScan'
 import { Drawer } from '@/components/ui/Drawer'
@@ -17,31 +18,44 @@ import { Stat } from '@/components/ui/Stat'
 import { Tabs } from '@/components/ui/Tabs'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /** Flagship screen — mirrors examples/scan-overview.page.yaml. */
 export function ScanOverview() {
+  const navigate = useNavigate()
   const count = (sev: string) => findings.filter((f) => f.severity === sev).length
   const packs = [...new Set(findings.map((f) => f.category).filter(Boolean))]
   const [selected, setSelected] = useState<Finding | null>(null)
+  const [rescanOpen, setRescanOpen] = useState(false)
 
   return (
     <>
-    <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
-      {/* header — spans both columns on wide */}
-      <div className="flex flex-wrap items-start justify-between gap-4 xl:col-span-2">
-        <div>
-          <div className="text-sm text-fg-subtle">
-            Repositories / <b className="text-fg">{repo.name}</b> / Scan
-          </div>
-          <h1 className="mt-0.5 text-xl font-semibold">Scan overview</h1>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="ghost">Compare scans</Button>
-          <Button variant="secondary">Export SARIF</Button>
-          <Button variant="primary">Re-scan</Button>
-        </div>
-      </div>
-
+    <PageHeader
+      title="Scan overview"
+      breadcrumb={<>Repositories / <b className="text-fg">{repo.name}</b> / Scan</>}
+      actions={
+        <>
+          <Button
+            variant="ghost"
+            onClick={() => navigate(`/repos/email-agent/scans/${scan.id}/diff/${scan.id}`)}
+          >
+            Compare scans
+          </Button>
+          <Button
+            variant="secondary"
+            disabled
+            title="SARIF is produced by the engine: trustabl scan --format sarif"
+          >
+            Export SARIF
+          </Button>
+          <Button variant="primary" onClick={() => setRescanOpen(true)}>
+            Re-scan
+          </Button>
+        </>
+      }
+    />
+    <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
       {/* provenance bar — spans both columns on wide */}
       <div className="xl:col-span-2">
         <ScanProvenanceBar scan={scan} right={<GateStatus gate={gate} />} />
@@ -99,6 +113,15 @@ export function ScanOverview() {
         />
       )}
     </Drawer>
+
+    <ConfirmDialog
+      open={rescanOpen}
+      onClose={() => setRescanOpen(false)}
+      onConfirm={() => setRescanOpen(false)}
+      title="Re-scan this repo?"
+      message="This will queue a fresh scan of the repository against the current rule packs."
+      confirmLabel="Re-scan"
+    />
     </>
   )
 }

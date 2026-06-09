@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { waivers } from '@/data/platform'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
 import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'
 
@@ -58,10 +58,10 @@ export function WaiversPage() {
     id === 'all' ? waivers.length : waivers.filter((w) => w.status === id).length
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <PageHeader title="Waivers" subtitle={`${waivers.length} waivers`} />
 
-      <div className="mb-4 flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         {FILTERS.map((f) => {
           const active = filter === f.id
           return (
@@ -83,15 +83,13 @@ export function WaiversPage() {
         })}
       </div>
 
-      <Card className="p-0">
-        <div className="overflow-auto p-2">
-          <DataTable
-            columns={columns}
-            rows={rows}
-            empty={`No ${filter === 'all' ? '' : filter + ' '}waivers.`}
-          />
-        </div>
-      </Card>
+      <TableCard title="Waivers" count={`${waivers.length}`}>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          empty={`No ${filter === 'all' ? '' : filter + ' '}waivers.`}
+        />
+      </TableCard>
     </div>
   )
 }

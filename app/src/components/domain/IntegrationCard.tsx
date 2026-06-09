@@ -1,14 +1,16 @@
+import { useState } from 'react'
 import type { Integration } from '@/types'
-import { cn } from '@/lib/cn'
 import { Button } from '@/components/ui/Button'
+import { Modal } from '@/components/ui/Modal'
+import { Input } from '@/components/ui/Input'
+import { StatusDot } from '@/components/ui/StatusDot'
 
-const DOT: Record<Integration['status'], string> = {
-  connected: 'bg-status-success',
-  disconnected: 'bg-fg-subtle',
-  error: 'bg-status-danger',
-}
+const DOT = { connected: 'success', disconnected: 'subtle', error: 'danger' } as const
 
 export function IntegrationCard({ integration }: { integration: Integration }) {
+  const [open, setOpen] = useState(false)
+  const [connected, setConnected] = useState(integration.status === 'connected')
+
   return (
     <div className="rounded-lg border bg-surface p-4">
       <div className="flex items-center justify-between">
@@ -17,16 +19,52 @@ export function IntegrationCard({ integration }: { integration: Integration }) {
           <div className="text-xs text-fg-subtle">{integration.kind}</div>
         </div>
         <span className="inline-flex items-center gap-1.5 text-xs text-fg-muted">
-          <span className={cn('h-2 w-2 rounded-full', DOT[integration.status])} />
-          {integration.status}
+          <StatusDot tone={connected ? 'success' : DOT[integration.status]} />
+          {connected ? 'connected' : integration.status}
         </span>
       </div>
       <p className="mt-2 text-sm text-fg-muted">{integration.detail}</p>
       <div className="mt-3">
-        <Button variant={integration.status === 'connected' ? 'ghost' : 'secondary'}>
-          {integration.status === 'connected' ? 'Configure' : 'Connect'}
+        <Button variant={connected ? 'ghost' : 'secondary'} onClick={() => setOpen(true)}>
+          {connected ? 'Configure' : 'Connect'}
         </Button>
       </div>
+
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={`${connected ? 'Configure' : 'Connect'} ${integration.name}`}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setConnected(true)
+                setOpen(false)
+              }}
+            >
+              {connected ? 'Save' : 'Connect'}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <div className="mb-1 text-xs uppercase tracking-wide text-fg-subtle">Endpoint</div>
+            <Input placeholder={`https://${integration.id}.internal.example.com`} />
+          </div>
+          <div>
+            <div className="mb-1 text-xs uppercase tracking-wide text-fg-subtle">API token / secret</div>
+            <Input type="password" placeholder="••••••••" />
+          </div>
+          <p className="text-xs text-fg-subtle">
+            Air-gap: point at an on-prem / internal endpoint — no public SaaS required.
+          </p>
+        </div>
+      </Modal>
     </div>
   )
 }

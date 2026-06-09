@@ -11,7 +11,9 @@ export function Topbar() {
         <img src={`${import.meta.env.BASE_URL}brand/logo-mark.png`} alt="" className="block h-6 w-6" /> Trustabl
       </span>
       <input
-        className="max-w-[520px] flex-1 rounded-md border border-strong bg-inset px-2.5 py-1.5 text-sm text-fg-muted"
+        readOnly
+        title="Search coming soon"
+        className="max-w-[520px] flex-1 cursor-not-allowed rounded-md border border-strong bg-inset px-2.5 py-1.5 text-sm text-fg-muted"
         placeholder="Search repos · findings · rules…"
       />
       <ConnectivityBadge />

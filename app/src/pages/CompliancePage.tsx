@@ -1,5 +1,6 @@
 import { compliance } from '@/data/platform'
 import { pct } from '@/lib/format'
+import { downloadFile } from '@/lib/download'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -16,7 +17,19 @@ export function CompliancePage() {
       <PageHeader
         title="Compliance"
         subtitle="OWASP LLM Top 10:2025"
-        actions={<Button variant="secondary">Export report</Button>}
+        actions={
+          <Button
+            variant="secondary"
+            onClick={() =>
+              downloadFile(
+                'owasp-llm-coverage.json',
+                JSON.stringify(compliance, null, 2),
+              )
+            }
+          >
+            Export report
+          </Button>
+        }
       />
 
       <Card className="text-sm text-fg-muted">

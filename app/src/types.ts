@@ -171,6 +171,7 @@ export interface RepoSummary {
   lastScan: string
   trend: number[]
   scanRoute?: string // link target when this repo has a loaded scan
+  demo?: boolean // sample repo with no real scan behind it
 }
 
 export type IntegrationStatus = 'connected' | 'disconnected' | 'error'

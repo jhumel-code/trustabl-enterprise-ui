@@ -3,6 +3,7 @@ import { rulePacks } from '@/data/platform'
 import { originIsWarning, originLabel, shortRef, sourceLabel } from '@/lib/format'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { DataTable } from '@/components/ui/DataTable'
@@ -11,7 +12,6 @@ type RulePack = (typeof rulePacks)[number]
 
 export function RulePacksPage() {
   const originWarn = originIsWarning(scan.rulesOrigin)
-  const totalRules = rulePacks.reduce((sum, p) => sum + p.rules, 0)
 
   const columns = [
     {
@@ -42,7 +42,11 @@ export function RulePacksPage() {
       <PageHeader
         title="Rule packs"
         subtitle="Detection rules resolved from trustabl-rules"
-        actions={<Button variant="secondary">Check for updates</Button>}
+        actions={
+          <Button variant="secondary" disabled title="rule updates are fetched at scan time">
+            Check for updates
+          </Button>
+        }
       />
 
       <Card className="flex flex-col gap-4">
@@ -79,19 +83,13 @@ export function RulePacksPage() {
         </p>
       </Card>
 
-      <Card className="flex flex-col gap-4">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-sm font-semibold text-fg">Loaded packs</h2>
-          <span className="text-xs text-fg-subtle">
-            {rulePacks.length} packs · {totalRules} rules
-          </span>
-        </div>
+      <TableCard title="Rule packs" count={`${rulePacks.length}`}>
         <DataTable<RulePack>
           columns={columns}
           rows={rulePacks}
           empty="No rule packs resolved."
         />
-      </Card>
+      </TableCard>
     </div>
   )
 }

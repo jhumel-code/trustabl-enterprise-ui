@@ -1,16 +1,27 @@
+import { useState } from 'react'
 import { integrations } from '@/data/platform'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
+import { Modal } from '@/components/ui/Modal'
+import { Field } from '@/components/ui/Field'
+import { Input } from '@/components/ui/Input'
+import { Select } from '@/components/ui/Select'
 import { IntegrationCard } from '@/components/domain/IntegrationCard'
 
 /** Control-plane integrations — connect SCM, SSO, ticketing, notifications, SIEM. */
 export function IntegrationsPage() {
+  const [open, setOpen] = useState(false)
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Integrations"
         subtitle="Connect your stack"
-        actions={<Button variant="primary">Add integration</Button>}
+        actions={
+          <Button variant="primary" onClick={() => setOpen(true)}>
+            Add integration
+          </Button>
+        }
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -24,6 +35,38 @@ export function IntegrationsPage() {
         outbound calls to a vendor cloud. Configure self-hosted SCM, IdP, and webhook targets
         so scans, gate checks, and exports keep working with no internet egress.
       </p>
+
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Add integration"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={() => setOpen(false)}>
+              Add
+            </Button>
+          </>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <Field label="Type">
+            <Select defaultValue="scm">
+              <option value="scm">SCM</option>
+              <option value="sso">SSO</option>
+              <option value="jira">Jira</option>
+              <option value="slack">Slack</option>
+              <option value="siem">SIEM</option>
+              <option value="webhook">Webhook</option>
+            </Select>
+          </Field>
+          <Field label="Name">
+            <Input placeholder="e.g. GitHub Enterprise" />
+          </Field>
+        </div>
+      </Modal>
     </div>
   )
 }

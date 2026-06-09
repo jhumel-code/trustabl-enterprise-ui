@@ -1,28 +1,26 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { RepoSummary } from '@/types'
 import { repos } from '@/data/platform'
 import { pct } from '@/lib/format'
-import { cn } from '@/lib/cn'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'
 
 /** All repositories — control-plane fleet view. Mostly mock platform data;
  *  the email-agent row links into the one real loaded scan. */
 export function RepositoriesPage() {
+  const navigate = useNavigate()
+
   const columns = [
     {
       header: 'Repository',
-      cell: (r: RepoSummary) =>
-        r.scanRoute ? (
-          <Link to={r.scanRoute} className="font-medium text-brand hover:text-brand-emphasis">
-            {r.name}
-          </Link>
-        ) : (
-          <Link to="#" className="font-medium text-fg hover:text-brand">
-            {r.name}
-          </Link>
-        ),
+      cell: (r: RepoSummary) => (
+        <Link to={`/repos/${r.id}`} className="font-medium text-brand">
+          {r.name}
+        </Link>
+      ),
     },
     {
       header: 'Readiness',
@@ -39,16 +37,14 @@ export function RepositoriesPage() {
     {
       header: 'Gate',
       className: 'w-[110px]',
-      cell: (r: RepoSummary) => (
-        <span
-          className={cn(
-            'inline-flex rounded-full px-2 py-0.5 text-xs font-medium text-fg-onbrand',
-            r.gate === 'pass' ? 'bg-status-success' : 'bg-severity-critical',
-          )}
-        >
-          {r.gate}
-        </span>
-      ),
+      cell: (r: RepoSummary) =>
+        r.demo ? (
+          <Badge tone="neutral">demo</Badge>
+        ) : (
+          <Badge variant="solid" tone={r.gate === 'pass' ? 'success' : 'danger'}>
+            {r.gate}
+          </Badge>
+        ),
     },
     {
       header: 'Findings',
@@ -65,13 +61,19 @@ export function RepositoriesPage() {
   ]
 
   return (
-    <>
-      <PageHeader title="Repositories" subtitle={`${repos.length} repositories`} />
-      <Card className="mt-6 p-0">
-        <div className="overflow-auto p-2">
-          <DataTable<RepoSummary> columns={columns} rows={repos} empty="No repositories onboarded yet." />
-        </div>
-      </Card>
-    </>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Repositories"
+        subtitle={`${repos.length} repositories`}
+        actions={
+          <Button variant="primary" onClick={() => navigate('/onboarding')}>
+            Add repository
+          </Button>
+        }
+      />
+      <TableCard title="Repositories" count={`${repos.length} repos`}>
+        <DataTable<RepoSummary> columns={columns} rows={repos} empty="No repositories onboarded yet." />
+      </TableCard>
+    </div>
   )
 }

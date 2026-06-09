@@ -1,9 +1,11 @@
+import { useRef, useState } from 'react'
 import { license } from '@/data/platform'
 import { pct } from '@/lib/format'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { StatusDot } from '@/components/ui/StatusDot'
 
 const usage = [
   { label: 'Seats', used: license.seatsUsed, cap: license.seats },
@@ -13,6 +15,9 @@ const usage = [
 
 /** License & entitlements — control-plane (platform-domain) data. */
 export function LicensePage() {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [keyName, setKeyName] = useState<string | null>(null)
+
   return (
     <div className="flex flex-col gap-6 max-w-content">
       <PageHeader
@@ -57,21 +62,39 @@ export function LicensePage() {
 
         <Card className="flex flex-col gap-4 lg:col-span-2">
           <div className="text-sm font-medium text-fg">Offline key</div>
-          {license.offlineKey ? (
+          <input
+            ref={fileRef}
+            type="file"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) setKeyName(file.name)
+            }}
+          />
+          {license.offlineKey || keyName ? (
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-sm">
-                <span className="h-2 w-2 rounded-full bg-status-success" />
+                <StatusDot tone="success" />
                 <span className="text-fg-muted">Air-gap key</span>
-                <span className="font-mono text-status-success">uploaded</span>
+                <span className="font-mono text-status-success">
+                  {keyName ?? 'uploaded'}
+                </span>
               </div>
-              <Button variant="ghost">Replace</Button>
+              <Button variant="ghost" onClick={() => fileRef.current?.click()}>
+                Replace
+              </Button>
             </div>
           ) : (
             <div className="flex flex-wrap items-center justify-between gap-3">
               <span className="text-sm text-fg-subtle">
                 No offline key on file — required for air-gapped updates.
               </span>
-              <Button variant="secondary">Upload key</Button>
+              <Button
+                variant="secondary"
+                onClick={() => fileRef.current?.click()}
+              >
+                Upload key
+              </Button>
             </div>
           )}
         </Card>
