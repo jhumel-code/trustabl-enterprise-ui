@@ -19,7 +19,7 @@ export default {
           subtle: 'var(--fg-subtle)',
           onbrand: 'var(--fg-onbrand)',
         },
-        brand: { DEFAULT: 'var(--brand)', emphasis: 'var(--brand-emphasis)' },
+        brand: { DEFAULT: 'var(--brand)', emphasis: 'var(--brand-emphasis)', subtle: 'var(--brand-subtle)' },
         severity: {
           critical: 'var(--sev-critical)',
           high: 'var(--sev-high)',

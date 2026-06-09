@@ -23,7 +23,7 @@ export function TopNav() {
               className={({ isActive }) =>
                 cn(
                   'rounded-md px-3 py-1.5 text-sm hover:text-fg',
-                  isActive ? 'bg-inset font-medium text-fg' : 'text-fg-muted',
+                  isActive ? 'bg-brand-subtle font-medium text-brand-emphasis' : 'text-fg-muted',
                 )
               }
             >

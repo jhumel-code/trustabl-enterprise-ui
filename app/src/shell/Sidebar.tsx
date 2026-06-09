@@ -24,7 +24,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
                       cn(
                         'block rounded-md px-2.5 py-[7px] text-fg-muted',
                         isActive
-                          ? 'border-l-2 border-l-brand bg-surface-raised text-fg'
+                          ? 'border-l-2 border-l-brand bg-brand-subtle font-medium text-brand-emphasis'
                           : 'hover:text-fg',
                       )
                     }

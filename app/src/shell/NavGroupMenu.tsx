@@ -37,7 +37,7 @@ export function NavGroupMenu({ group }: { group: NavGroup }) {
         aria-expanded={open}
         className={cn(
           'inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-sm hover:text-fg',
-          active ? 'bg-inset font-medium text-fg' : 'text-fg-muted',
+          active ? 'bg-brand-subtle font-medium text-brand-emphasis' : 'text-fg-muted',
         )}
       >
         {group.heading}
@@ -70,7 +70,7 @@ export function NavGroupMenu({ group }: { group: NavGroup }) {
               className={({ isActive }) =>
                 cn(
                   'block px-3 py-1.5 text-sm hover:bg-inset',
-                  isActive ? 'font-medium text-fg' : 'text-fg-muted',
+                  isActive ? 'font-medium text-brand-emphasis' : 'text-fg-muted',
                 )
               }
             >
