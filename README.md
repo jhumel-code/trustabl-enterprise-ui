@@ -1,5 +1,8 @@
 # Trustabl Enterprise — UI Generation Model & Structure
 
+> 🔗 **Live demo:** https://jhumel-code.github.io/trustabl-enterprise-ui/ — the
+> [`app/`](app/) React frontend, rendering a real `trustabl scan`.
+
 A structured, machine-consumable model that **drives generation** of wireframes, page
 layouts, the design system, and integration surfaces for the Trustabl Enterprise
 control plane. Feed these artifacts to a generator (an LLM, a codegen step, a Figma
