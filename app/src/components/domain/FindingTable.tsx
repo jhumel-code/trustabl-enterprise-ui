@@ -17,14 +17,17 @@ export function FindingTable({
   findings,
   onSelect,
   selected,
+  sort = 'severity',
 }: {
   findings: Finding[]
   onSelect?: (f: Finding) => void
   selected?: Finding | null
+  sort?: 'severity' | 'none'
 }) {
-  const rows = [...findings].sort(
-    (a, b) => SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity),
-  )
+  const rows =
+    sort === 'none'
+      ? findings
+      : [...findings].sort((a, b) => SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity))
   return (
     <table className="w-full border-collapse text-sm">
       <thead>
