@@ -1,22 +1,41 @@
 import type { InventoryEntity } from '@/types'
 import { useNavigate } from 'react-router-dom'
 import { inventory, inventoryEntities, surfaces } from '@/data/loadScan'
+import { kindDot } from '@/lib/format'
+import { cn } from '@/lib/cn'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { TableCard } from '@/components/ui/TableCard'
-import { Badge } from '@/components/ui/Badge'
 import { Stat } from '@/components/ui/Stat'
 import { Tabs } from '@/components/ui/Tabs'
 import { DataTable } from '@/components/ui/DataTable'
 import type { Column } from '@/components/ui/DataTable'
 import { SurfaceList } from '@/components/domain/SurfaceList'
 
+// Map each summary tile to its entity kind for color-coding.
+const LABEL_KIND: Record<string, string> = {
+  Tools: 'tool',
+  Agents: 'agent',
+  Subagents: 'subagent',
+  Skills: 'skill',
+  'MCP servers': 'mcp',
+  'Slash commands': '',
+}
+
 /** Surfaces & Inventory — everything the scanner discovered, in one place. */
 export function InventoryPage() {
   const navigate = useNavigate()
 
   const columns: Column<InventoryEntity>[] = [
-    { header: 'Kind', cell: (e) => <Badge>{e.kind}</Badge> },
+    {
+      header: 'Kind',
+      cell: (e) => (
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-fg-muted">
+          <span className={cn('h-2 w-2 rounded-full', kindDot(e.kind))} />
+          {e.kind}
+        </span>
+      ),
+    },
     { header: 'Name', cell: (e) => <span className="font-medium text-fg">{e.name}</span> },
     {
       header: 'Location',
@@ -44,7 +63,7 @@ export function InventoryPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {inventory.map((i) => (
-          <Stat key={i.label} label={i.label} value={i.n} />
+          <Stat key={i.label} label={i.label} value={i.n} dotClass={kindDot(LABEL_KIND[i.label] ?? '')} />
         ))}
       </div>
 
