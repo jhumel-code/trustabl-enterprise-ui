@@ -4,11 +4,12 @@ import type { Dependency, Skill } from '@/types'
 import { dependencies, findings, skills } from '@/data/loadScan'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
+import { TableCard } from '@/components/ui/TableCard'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { DataTable } from '@/components/ui/DataTable'
+import { Drawer } from '@/components/ui/Drawer'
 import { SkillBundleView } from '@/components/domain/SkillBundleView'
 import { FindingTable } from '@/components/domain/FindingTable'
-import { cn } from '@/lib/cn'
 
 const depColumns: { header: string; cell: (row: Dependency) => ReactNode; className?: string }[] = [
   { header: 'Name', cell: (d) => <span className="text-fg">{d.name}</span> },
@@ -17,77 +18,66 @@ const depColumns: { header: string; cell: (row: Dependency) => ReactNode; classN
   { header: 'Source', cell: (d) => <span className="font-mono text-xs text-fg-subtle">{d.source}</span> },
 ]
 
-/** Skills browser — list-detail. SKILL.md bundle facts, content findings, and the repo BOM. */
+/** Skills browser — full-width list; the skill bundle + content findings open in a
+ *  drawer. The repo-wide dependency BOM is a separate card (not skill-scoped). */
 export function SkillDetailPage() {
-  const [selected, setSelected] = useState<Skill | null>(skills[0] ?? null)
-
+  const [selected, setSelected] = useState<Skill | null>(null)
   const contentFindings = selected ? findings.filter((f) => f.filePath === selected.filePath) : []
 
+  const skillColumns: { header: string; cell: (s: Skill) => ReactNode; className?: string }[] = [
+    { header: 'Skill', cell: (s) => <span className="font-medium">{s.name}</span> },
+    { header: 'Description', cell: (s) => <span className="text-fg-muted">{s.description}</span> },
+    { header: 'Tools', cell: (s) => s.allowedTools.length, className: 'text-right tabular-nums' },
+    { header: 'Bundled', cell: (s) => s.bundledFiles.length, className: 'text-right tabular-nums' },
+  ]
+
   return (
-    <div className="flex flex-col gap-6">
-      <PageHeader title="Skills" subtitle={`${skills.length} skill${skills.length === 1 ? '' : 's'}`} />
+    <>
+      <div className="flex flex-col gap-6">
+        <PageHeader title="Skills" subtitle={`${skills.length} skill${skills.length === 1 ? '' : 's'}`} />
 
-      {skills.length === 0 ? (
-        <EmptyState title="No skills discovered" />
-      ) : (
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[360px_1fr]">
-          {/* skill list */}
-          <Card className="min-w-0 p-2">
-            <ul className="flex flex-col gap-1">
-              {skills.map((s) => {
-                const active = selected?.filePath === s.filePath && selected?.name === s.name
-                return (
-                  <li key={`${s.filePath}:${s.name}`}>
-                    <button
-                      type="button"
-                      onClick={() => setSelected(s)}
-                      className={cn(
-                        'w-full rounded-md px-3 py-2 text-left transition-colors',
-                        active ? 'bg-inset' : 'hover:bg-surface-raised',
-                      )}
-                    >
-                      <div className="truncate text-sm font-medium text-fg">{s.name}</div>
-                      <div className="truncate text-xs text-fg-subtle">{s.description}</div>
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-          </Card>
+        {skills.length === 0 ? (
+          <EmptyState title="No skills discovered" description="This scan found no skills." />
+        ) : (
+          <TableCard title="Skills" count={`${skills.length}`}>
+            <DataTable<Skill>
+              columns={skillColumns}
+              rows={skills}
+              onRowClick={setSelected}
+              empty="No skills discovered."
+            />
+          </TableCard>
+        )}
 
-          {/* detail */}
-          <div className="flex min-w-0 flex-col gap-6">
-            {selected && (
-              <>
-                <Card>
-                  <SkillBundleView skill={selected} />
-                </Card>
-
-                <Card>
-                  <div className="mb-3 text-sm font-semibold text-fg">
-                    Content findings
-                    <span className="ml-2 text-fg-subtle">{contentFindings.length}</span>
-                  </div>
-                  <FindingTable findings={contentFindings} />
-                </Card>
-
-                <Card>
-                  <div className="mb-1 text-sm font-semibold text-fg">Dependencies (BOM)</div>
-                  <p className="mb-3 text-xs text-fg-subtle">
-                    Repo-wide bill of materials — {dependencies.length} package
-                    {dependencies.length === 1 ? '' : 's'} across the scanned project, not scoped to this skill.
-                  </p>
-                  <DataTable<Dependency>
-                    columns={depColumns}
-                    rows={dependencies}
-                    empty="No dependencies resolved."
-                  />
-                </Card>
-              </>
-            )}
+        <Card>
+          <div className="mb-1 text-sm font-semibold text-fg">Dependencies (BOM)</div>
+          <p className="mb-3 text-xs text-fg-subtle">
+            Repo-wide bill of materials — {dependencies.length} package
+            {dependencies.length === 1 ? '' : 's'} across the scanned project, not scoped to a skill.
+          </p>
+          <div className="overflow-auto">
+            <DataTable<Dependency> columns={depColumns} rows={dependencies} empty="No dependencies resolved." />
           </div>
-        </div>
-      )}
-    </div>
+        </Card>
+      </div>
+
+      <Drawer open={!!selected} onClose={() => setSelected(null)} title="Skill">
+        {selected && (
+          <div className="space-y-5">
+            <SkillBundleView skill={selected} />
+            <div>
+              <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-fg-subtle">
+                Content findings · {contentFindings.length}
+              </div>
+              {contentFindings.length > 0 ? (
+                <FindingTable findings={contentFindings} />
+              ) : (
+                <div className="py-2 text-sm text-fg-muted">No content findings for this skill.</div>
+              )}
+            </div>
+          </div>
+        )}
+      </Drawer>
+    </>
   )
 }
