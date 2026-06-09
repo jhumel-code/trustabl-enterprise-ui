@@ -117,6 +117,19 @@ export function GlobalSearch() {
 
   return (
     <div ref={rootRef} className="relative hidden w-72 min-w-0 shrink sm:block">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m21 21-4.3-4.3" />
+      </svg>
       <input
         value={query}
         onChange={(e) => {
@@ -129,7 +142,7 @@ export function GlobalSearch() {
         aria-expanded={showDropdown}
         aria-controls="global-search-results"
         placeholder="Search repos · findings · rules…"
-        className="w-full rounded-md border border-strong bg-inset px-2.5 py-1.5 text-sm text-fg placeholder:text-fg-subtle focus:border-brand focus:outline-none"
+        className="w-full rounded-md border border-strong bg-inset py-1.5 pl-8 pr-2.5 text-sm text-fg placeholder:text-fg-subtle focus:border-brand focus:outline-none"
       />
       {showDropdown && (
         <div
