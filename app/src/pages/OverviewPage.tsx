@@ -62,7 +62,7 @@ export function OverviewPage() {
     },
     {
       header: 'Findings',
-      className: 'w-[90px] text-right',
+      className: 'w-[90px]',
       cell: (r: RepoSummary) => <span className="font-mono tabular-nums text-fg">{r.findings}</span>,
     },
     {

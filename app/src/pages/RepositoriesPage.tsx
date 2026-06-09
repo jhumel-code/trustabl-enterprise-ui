@@ -54,7 +54,7 @@ export function RepositoriesPage() {
     },
     {
       header: 'Findings',
-      className: 'w-[100px] text-right',
+      className: 'w-[100px]',
       sortKey: (r: RepoSummary) => r.findings,
       cell: (r: RepoSummary) => <span className="font-mono tabular-nums text-fg">{r.findings}</span>,
     },
